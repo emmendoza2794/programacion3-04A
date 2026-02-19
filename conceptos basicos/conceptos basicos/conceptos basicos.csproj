@@ -44,6 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
+    <Compile Include="Ejemplos\EjemploSintaxis.cs" />
+    <Compile Include="Ejemplos\EjemploSintaxisInput.cs" />
+    <Compile Include="Ejemplos\EjemploPOO.cs" />
+    <Compile Include="Ejemplos\EjemploPOOInput.cs" />
+    <Compile Include="Ejemplos\EjemploArchivos.cs" />
+    <Compile Include="Ejemplos\EjemploArchivosInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
