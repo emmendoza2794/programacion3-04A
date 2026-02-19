@@ -9,7 +9,11 @@ programacion3-04A/                    <-- Repositorio (raiz)
     ├── .vs/                          <-- Carpeta interna de Visual Studio
     └── conceptos basicos/            <-- Carpeta del proyecto
         ├── conceptos basicos.csproj  <-- Archivo de proyecto
-        ├── Program.cs                <-- Codigo principal (punto de entrada)
+        ├── Program.cs                <-- Punto de entrada (Menú interactivo)
+        ├── Ejemplos/                 <-- Carpeta con el codigo de cada tema
+        │   ├── EjemploSintaxis.cs
+        │   ├── EjemploArchivos.cs
+        │   └── ...
         ├── App.config                <-- Configuracion de la app
         ├── Properties/
         │   └── AssemblyInfo.cs       <-- Metadatos del ensamblado
@@ -20,43 +24,20 @@ programacion3-04A/                    <-- Repositorio (raiz)
 ## Descripcion de cada archivo
 
 ### 1. Archivo de solucion (`.slnx`)
+... (mantener igual) ...
 
-Es el archivo "padre" que agrupa uno o mas proyectos. Cuando abres este archivo en Visual Studio, se carga toda la solucion con todos sus proyectos.
+### 4. `Program.cs` - Menú del Proyecto
 
-```xml
-<Solution>
-  <Project Path="conceptos basicos/conceptos basicos.csproj" />
-</Solution>
-```
+En este proyecto específico, el `Program.cs` actúa como un **Menú Interactivo**. Su función principal es permitir al usuario elegir qué ejemplo del Módulo 1 desea ejecutar (Sintaxis, POO, Archivos, etc.).
 
-Una solucion puede contener multiples proyectos (por ejemplo: un proyecto de consola, una libreria de clases y un proyecto de pruebas unitarias).
+Utiliza una estructura `while` y un `switch` para navegar entre las diferentes opciones disponibles en la carpeta `Ejemplos`.
 
-### 2. Carpeta `.vs/`
+### 5. Carpeta `Ejemplos/`
 
-Carpeta que Visual Studio usa internamente para guardar configuracion del IDE: layout de ventanas, indices de busqueda, preferencias del usuario, etc.
-
-**No se sube a git** porque es especifica de cada desarrollador.
-
-### 3. Archivo de proyecto (`.csproj`)
-
-Es el archivo mas importante del proyecto. Define:
-
-- **Tipo de aplicacion**: `<OutputType>Exe</OutputType>` indica que es una app de consola (genera un `.exe`).
-- **Framework objetivo**: `<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>` indica que usa .NET Framework 4.7.2.
-- **Referencias**: librerias del sistema que el proyecto necesita (System, System.Core, System.Linq, etc.).
-- **Archivos a compilar**: lista de archivos `.cs` que forman parte del proyecto.
-- **Configuraciones de compilacion**: Debug (para desarrollo, con simbolos de depuracion) y Release (para produccion, con optimizaciones).
-
-### 4. `Program.cs` - Punto de entrada
-
-Es el archivo principal y el **punto de entrada** de la aplicacion. Contiene el metodo `Main`, que es lo primero que se ejecuta cuando corres el programa.
+Esta carpeta contiene archivos `.cs` separados para cada concepto del curso. Esto permite que el código sea modular y más fácil de estudiar. Cada archivo tiene su propio namespace (ej. `conceptos_basicos.Ejemplos`) y un método público `Ejecutar()` que es llamado desde el menú principal.
 
 ```csharp
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace conceptos_basicos
 {
@@ -64,16 +45,27 @@ namespace conceptos_basicos
     {
         static void Main(string[] args)
         {
-            // Aqui va tu codigo
+            // Aquí va tu código
         }
     }
 }
 ```
 
-- **`using`**: importa namespaces (librerias) para poder usar sus clases.
-- **`namespace`**: agrupa las clases del proyecto bajo un nombre logico.
-- **`internal class Program`**: la clase principal. `internal` significa que solo es accesible dentro del mismo proyecto.
-- **`static void Main(string[] args)`**: el metodo de entrada. `static` porque se ejecuta sin crear una instancia de la clase. `args` permite recibir argumentos desde la linea de comandos.
+#### Conceptos Clave:
+
+- **`namespace` (Espacio de nombres):**
+  Es una forma de organizar el código y evitar conflictos de nombres. Imaginalo como una "carpeta lógica" o un apellido para tus clases. Permite que dos clases tengan el mismo nombre siempre que estén en namespaces diferentes.
+
+- **`internal class` vs `public class` (Modificadores de acceso):**
+  - **`public`**: La clase es accesible desde cualquier otro proyecto que haga referencia a este. Es el nivel de acceso más permisivo.
+  - **`internal`**: La clase solo es accesible dentro del mismo proyecto (ensamblado). Es el nivel por defecto en Visual Studio para las clases si no se especifica uno, ideal para ocultar lógica interna que no debe ser expuesta al exterior.
+
+- **`static void`:**
+  - **`static`**: Indica que el método pertenece a la **clase misma** y no a una instancia (objeto) de la clase. Esto permite que el sistema operativo llame al método `Main` sin tener que crear un objeto `Program` primero.
+  - **`void`**: Indica que el método **no devuelve ningún valor** (no hay un `return` con datos al finalizar).
+
+- **`Main(string[] args)`:**
+  Es el nombre estándar del método de entrada. El parámetro `args` es un arreglo de cadenas que permite recibir información desde la línea de comandos al momento de iniciar la aplicación.
 
 ### 5. `App.config`
 
