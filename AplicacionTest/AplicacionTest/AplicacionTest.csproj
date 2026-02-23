@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{55149A6C-F1F1-4A7A-9392-51970354DDE7}</ProjectGuid>
+    <ProjectGuid>{9A561D1B-CD2F-42E3-8DB2-5294A31DE988}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>conceptos_basicos</RootNamespace>
-    <AssemblyName>conceptos basicos</AssemblyName>
+    <RootNamespace>AplicacionTest</RootNamespace>
+    <AssemblyName>AplicacionTest</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,14 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ejemplos\EjemploTest.cs" />
+    <Compile Include="ejercicios\Ejercicio1.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Ejemplos\EjemploSintaxis.cs" />
-    <Compile Include="Ejemplos\EjemploSintaxisInput.cs" />
-    <Compile Include="Ejemplos\EjemploPOO.cs" />
-    <Compile Include="Ejemplos\EjemploPOOInput.cs" />
-    <Compile Include="Ejemplos\EjemploArchivos.cs" />
-    <Compile Include="Ejemplos\EjemploArchivosInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
