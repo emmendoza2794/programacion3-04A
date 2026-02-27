@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9A561D1B-CD2F-42E3-8DB2-5294A31DE988}</ProjectGuid>
+    <ProjectGuid>{65F31191-54D8-4A37-923B-56CB171CA850}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>AplicacionTest</RootNamespace>
-    <AssemblyName>AplicacionTest</AssemblyName>
+    <RootNamespace>ejerciciosPOO</RootNamespace>
+    <AssemblyName>ejerciciosPOO</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,9 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ejercicios\Ejercicio1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ejercicios\EjemploBanco.cs" />
+    <Compile Include="ejercicios\EjemploNomina.cs" />
+    <Compile Include="ejercicios\EjemploNotificaciones.cs" />
+    <Compile Include="ejercicios\EjemploRPG.cs" />
+    <Compile Include="ejercicios\EjemploTienda.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
