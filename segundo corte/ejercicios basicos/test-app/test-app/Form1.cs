@@ -22,7 +22,7 @@ namespace test_app
         private void button1_Click(object sender, EventArgs e)
         {
             clickCount++;
-            label3.Text = clickCount.ToString();
+            lblContador.Text = clickCount.ToString();
         }
     }
 }

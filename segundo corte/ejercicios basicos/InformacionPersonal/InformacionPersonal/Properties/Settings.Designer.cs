@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Mi_cuenta.Properties
+namespace InformacionPersonal.Properties
 {
 
 
