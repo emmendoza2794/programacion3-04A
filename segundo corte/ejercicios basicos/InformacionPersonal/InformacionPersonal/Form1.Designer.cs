@@ -1,6 +1,6 @@
 ﻿namespace InformacionPersonal
 {
-    partial class Form1
+    partial class Form1 : System.Windows.Forms.Form
     {
         /// <summary>
         /// Variable del diseñador necesaria.
@@ -191,6 +191,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(800, 493);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Form1";
             this.Text = "Form1";
