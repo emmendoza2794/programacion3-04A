@@ -74,5 +74,10 @@ namespace app_inventario
             var paquetesForm = new Paquetes();
             paquetesForm.ShowDialog();
         }
+
+        private void btnInventario_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

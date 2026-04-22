@@ -107,9 +107,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\images\icons\paquetes.png" />
-    <Content Include="Resources\images\icons\bodega.png" />
     <Content Include="Resources\images\icons\envios.png" />
+    <Content Include="Resources\images\icons\informes.png" />
+    <Content Include="Resources\images\icons\inventario.png" />
     <Content Include="Resources\images\icons\paquetes2.png" />
     <Content Include="Resources\images\logo.png" />
   </ItemGroup>
