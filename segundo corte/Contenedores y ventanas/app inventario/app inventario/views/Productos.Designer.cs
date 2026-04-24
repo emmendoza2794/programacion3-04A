@@ -189,6 +189,11 @@
             // 
             this.nudPrecio.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.nudPrecio.Location = new System.Drawing.Point(174, 131);
+            this.nudPrecio.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
             this.nudPrecio.Name = "nudPrecio";
             this.nudPrecio.Size = new System.Drawing.Size(268, 30);
             this.nudPrecio.TabIndex = 5;
@@ -225,6 +230,7 @@
             this.button2.TabIndex = 2;
             this.button2.Text = "Limpiar";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // groupBox2
             // 

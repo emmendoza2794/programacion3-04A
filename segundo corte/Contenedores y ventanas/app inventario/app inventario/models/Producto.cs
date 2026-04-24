@@ -9,7 +9,7 @@ namespace app_inventario.models
 {
     public class Producto
     {
-        private const string RUTA = "../db/productos.csv";
+        private static readonly string RUTA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "db", "productos.csv");
 
         public int Id { get; set; }
         public String Descripcion { get; set; }
@@ -24,6 +24,13 @@ namespace app_inventario.models
             Precio = precio;
 
             String linea = $"{Id},{Descripcion},{Precio}";
+
+            // Crear el directorio si no existe
+            string directorio = Path.GetDirectoryName(RUTA);
+            if (!Directory.Exists(directorio))
+            {
+                Directory.CreateDirectory(directorio);
+            }
 
             File.AppendAllText(RUTA, linea + Environment.NewLine);
 
