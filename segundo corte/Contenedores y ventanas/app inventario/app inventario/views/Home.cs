@@ -79,5 +79,11 @@ namespace app_inventario
         {
 
         }
+
+        private void btnProductos_Click(object sender, EventArgs e)
+        {
+            var productosForm = new Productos();
+            productosForm.ShowDialog();
+        }
     }
 }

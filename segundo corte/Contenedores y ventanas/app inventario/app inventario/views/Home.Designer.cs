@@ -32,10 +32,11 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnEnvios = new System.Windows.Forms.Button();
-            this.btnPaquetes = new System.Windows.Forms.Button();
-            this.btnInventario = new System.Windows.Forms.Button();
+            this.btnProductos = new System.Windows.Forms.Button();
             this.btnInformes = new System.Windows.Forms.Button();
+            this.btnPaquetes = new System.Windows.Forms.Button();
+            this.btnEnvios = new System.Windows.Forms.Button();
+            this.btnInventario = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -53,7 +54,7 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.splitContainer1.Panel1.BackColor = System.Drawing.Color.Peru;
             this.splitContainer1.Panel1.Controls.Add(this.pictureBox1);
             // 
             // splitContainer1.Panel2
@@ -84,10 +85,11 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.Controls.Add(this.btnInformes, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnInventario, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnEnvios, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnPaquetes, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnProductos, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnInformes, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.btnPaquetes, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnEnvios, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnInventario, 1, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(116, 38);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
@@ -96,46 +98,19 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(857, 355);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // btnEnvios
+            // btnProductos
             // 
-            this.btnEnvios.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.btnProductos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEnvios.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnEnvios.BackgroundImage")));
-            this.btnEnvios.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnEnvios.Location = new System.Drawing.Point(217, 3);
-            this.btnEnvios.Name = "btnEnvios";
-            this.btnEnvios.Size = new System.Drawing.Size(208, 169);
-            this.btnEnvios.TabIndex = 2;
-            this.btnEnvios.UseVisualStyleBackColor = true;
-            // 
-            // btnPaquetes
-            // 
-            this.btnPaquetes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPaquetes.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnPaquetes.BackgroundImage")));
-            this.btnPaquetes.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnPaquetes.Location = new System.Drawing.Point(431, 3);
-            this.btnPaquetes.Name = "btnPaquetes";
-            this.btnPaquetes.Size = new System.Drawing.Size(208, 169);
-            this.btnPaquetes.TabIndex = 5;
-            this.btnPaquetes.UseVisualStyleBackColor = true;
-            this.btnPaquetes.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // btnInventario
-            // 
-            this.btnInventario.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInventario.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnInventario.BackgroundImage")));
-            this.btnInventario.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnInventario.Location = new System.Drawing.Point(3, 3);
-            this.btnInventario.Name = "btnInventario";
-            this.btnInventario.Size = new System.Drawing.Size(208, 169);
-            this.btnInventario.TabIndex = 6;
-            this.btnInventario.UseVisualStyleBackColor = true;
-            this.btnInventario.Click += new System.EventHandler(this.btnInventario_Click);
+            this.btnProductos.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnProductos.BackgroundImage")));
+            this.btnProductos.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnProductos.Location = new System.Drawing.Point(3, 3);
+            this.btnProductos.Name = "btnProductos";
+            this.btnProductos.Size = new System.Drawing.Size(208, 169);
+            this.btnProductos.TabIndex = 8;
+            this.btnProductos.UseVisualStyleBackColor = true;
+            this.btnProductos.Click += new System.EventHandler(this.btnProductos_Click);
             // 
             // btnInformes
             // 
@@ -144,11 +119,52 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnInformes.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnInformes.BackgroundImage")));
             this.btnInformes.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnInformes.Location = new System.Drawing.Point(645, 3);
+            this.btnInformes.Location = new System.Drawing.Point(3, 178);
             this.btnInformes.Name = "btnInformes";
-            this.btnInformes.Size = new System.Drawing.Size(209, 169);
+            this.btnInformes.Size = new System.Drawing.Size(208, 174);
             this.btnInformes.TabIndex = 7;
             this.btnInformes.UseVisualStyleBackColor = true;
+            // 
+            // btnPaquetes
+            // 
+            this.btnPaquetes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPaquetes.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnPaquetes.BackgroundImage")));
+            this.btnPaquetes.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnPaquetes.Location = new System.Drawing.Point(645, 3);
+            this.btnPaquetes.Name = "btnPaquetes";
+            this.btnPaquetes.Size = new System.Drawing.Size(209, 169);
+            this.btnPaquetes.TabIndex = 5;
+            this.btnPaquetes.UseVisualStyleBackColor = true;
+            this.btnPaquetes.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // btnEnvios
+            // 
+            this.btnEnvios.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEnvios.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnEnvios.BackgroundImage")));
+            this.btnEnvios.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnEnvios.Location = new System.Drawing.Point(431, 3);
+            this.btnEnvios.Name = "btnEnvios";
+            this.btnEnvios.Size = new System.Drawing.Size(208, 169);
+            this.btnEnvios.TabIndex = 2;
+            this.btnEnvios.UseVisualStyleBackColor = true;
+            // 
+            // btnInventario
+            // 
+            this.btnInventario.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnInventario.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnInventario.BackgroundImage")));
+            this.btnInventario.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnInventario.Location = new System.Drawing.Point(217, 3);
+            this.btnInventario.Name = "btnInventario";
+            this.btnInventario.Size = new System.Drawing.Size(208, 169);
+            this.btnInventario.TabIndex = 6;
+            this.btnInventario.UseVisualStyleBackColor = true;
+            this.btnInventario.Click += new System.EventHandler(this.btnInventario_Click);
             // 
             // Home
             // 
@@ -177,6 +193,7 @@
         private System.Windows.Forms.Button btnPaquetes;
         private System.Windows.Forms.Button btnInformes;
         private System.Windows.Forms.Button btnInventario;
+        private System.Windows.Forms.Button btnProductos;
     }
 }
 

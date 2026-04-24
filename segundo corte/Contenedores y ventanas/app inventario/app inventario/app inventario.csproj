@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="controllers\Productos.cs" />
+    <Compile Include="models\Inventario.cs" />
+    <Compile Include="models\Producto.cs" />
     <Compile Include="views\Envios.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +76,12 @@
     <Compile Include="views\Paquetes.Designer.cs">
       <DependentUpon>Paquetes.cs</DependentUpon>
     </Compile>
+    <Compile Include="views\Productos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="views\Productos.Designer.cs">
+      <DependentUpon>Productos.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="views\Envios.resx">
       <DependentUpon>Envios.cs</DependentUpon>
     </EmbeddedResource>
@@ -93,6 +103,9 @@
     <EmbeddedResource Include="views\Paquetes.resx">
       <DependentUpon>Paquetes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="views\Productos.resx">
+      <DependentUpon>Productos.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -111,7 +124,11 @@
     <Content Include="Resources\images\icons\informes.png" />
     <Content Include="Resources\images\icons\inventario.png" />
     <Content Include="Resources\images\icons\paquetes2.png" />
+    <Content Include="Resources\images\icons\productos.png" />
     <Content Include="Resources\images\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bd\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
