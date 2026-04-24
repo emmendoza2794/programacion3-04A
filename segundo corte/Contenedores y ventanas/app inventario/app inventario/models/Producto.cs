@@ -15,14 +15,9 @@ namespace app_inventario.models
         public String Descripcion { get; set; }
         public int Precio { get; set; }
 
-        public Producto(int id, String descripcion, int precio)
-        {
-            Id = id;
-            Descripcion = descripcion;
-            Precio = precio;
-        }
+        public Producto() { }
 
-        public void CrearProducto(int id, String descripcion, int precio)
+        public void Crear(int id, String descripcion, int precio)
         {
             Id = id;
             Descripcion = descripcion;
@@ -34,7 +29,7 @@ namespace app_inventario.models
 
         }
 
-        public List<Producto> GetProductos()
+        public List<Producto> Listar()
         {
 
             List<Producto> productos = new List<Producto>();
@@ -49,7 +44,10 @@ namespace app_inventario.models
                         int id = int.Parse(datos[0]);
                         String descripcion = datos[1];
                         int precio = int.Parse(datos[2]);
-                        Producto producto = new Producto(id, descripcion, precio);
+                        Producto producto = new Producto();
+                        producto.Id = id;
+                        producto.Descripcion = descripcion;
+                        producto.Precio = precio;
                         productos.Add(producto);
                     }
                 }
@@ -58,7 +56,7 @@ namespace app_inventario.models
 
         }
 
-        public void EliminarProducto(int id)
+        public void Eliminar(int id)
         {
             if (File.Exists(RUTA))
             {
@@ -68,7 +66,7 @@ namespace app_inventario.models
             }
         }
 
-        public void ActualizarProducto(int id, String descripcion, int precio)
+        public void Actualizar(int id, String descripcion, int precio)
         {
             if (File.Exists(RUTA))
             {
@@ -84,6 +82,29 @@ namespace app_inventario.models
                 }
                 File.WriteAllLines(RUTA, lineas);
             }
+        }
+
+        public Producto Buscar(int id)
+        {
+            if (File.Exists(RUTA))
+            {
+                var lineas = File.ReadAllLines(RUTA);
+                foreach (var linea in lineas)
+                {
+                    var datos = linea.Split(',');
+                    if (datos.Length == 3 && int.Parse(datos[0]) == id)
+                    {
+                        String descripcion = datos[1];
+                        int precio = int.Parse(datos[2]);
+                        Producto producto = new Producto();
+                        producto.Id = id;
+                        producto.Descripcion = descripcion;
+                        producto.Precio = precio;
+                        return producto;
+                    }
+                }
+            }
+            return null;
         }
     }
 }
