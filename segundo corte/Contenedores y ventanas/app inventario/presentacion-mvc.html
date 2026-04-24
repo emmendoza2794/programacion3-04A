@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVC con Windows Forms</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f0f0f;
+    color: #f0f0f0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .slides { width: 100%; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Colores por capa */
+  .slide-title   { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+  .slide-mvc     { background: #111; }
+  .slide-model   { background: linear-gradient(135deg, #0d1b0d, #1a2e1a); justify-content: flex-start; padding-top: 40px; overflow-y: auto; }
+  .slide-ctrl    { background: linear-gradient(135deg, #1a1a0d, #2e2a10); justify-content: flex-start; padding-top: 40px; overflow-y: auto; }
+  .slide-view    { background: linear-gradient(135deg, #0d0d1f, #12103a); justify-content: flex-start; padding-top: 40px; overflow-y: auto; }
+  .slide-flujo   { background: #111; }
+  .slide-resumen { background: linear-gradient(135deg, #1a1a2e, #0d0d1f); }
+
+  h1 { font-size: 2.8rem; font-weight: 700; text-align: center; margin-bottom: 12px; }
+  h2 { font-size: 2rem; font-weight: 700; margin-bottom: 28px; }
+  h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 12px; opacity: 0.7; letter-spacing: 2px; text-transform: uppercase; }
+  p  { font-size: 1.15rem; line-height: 1.7; opacity: 0.85; }
+
+  .subtitle {
+    font-size: 1.2rem;
+    opacity: 0.6;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+  .badge-model { background: #1e5c1e; color: #7dff7d; }
+  .badge-ctrl  { background: #5c4e00; color: #ffd966; }
+  .badge-view  { background: #1a1a5c; color: #8888ff; }
+
+  /* Cards MVC */
+  .mvc-cards {
+    display: flex;
+    gap: 32px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .card {
+    flex: 1;
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .card-model { background: #0d2e0d; border: 2px solid #2e7d2e; }
+  .card-ctrl  { background: #2e2800; border: 2px solid #7a6500; }
+  .card-view  { background: #0d0d2e; border: 2px solid #2e2ea0; }
+
+  .card .icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .card h4 { font-size: 1.3rem; margin-bottom: 8px; }
+  .card p { font-size: 0.95rem; opacity: 0.75; }
+
+  /* Código */
+  .code-block {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 24px 28px;
+    width: 100%;
+    max-width: 860px;
+    font-family: 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    border-left: 4px solid;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .code-model { border-color: #2e7d2e; }
+  .code-ctrl  { border-color: #c8a000; }
+  .code-view  { border-color: #4444cc; }
+
+  .kw   { color: #569cd6; }
+  .type { color: #4ec9b0; }
+  .str  { color: #ce9178; }
+  .cmt  { color: #6a9955; font-style: italic; }
+  .fn   { color: #dcdcaa; }
+  .num  { color: #b5cea8; }
+  .prop { color: #9cdcfe; }
+
+  /* Layout de dos columnas */
+  .two-col {
+    display: flex;
+    gap: 40px;
+    width: 100%;
+    max-width: 1100px;
+    align-items: flex-start;
+  }
+
+  .col-text { flex: 1; }
+  .col-code { flex: 1.4; }
+
+  .points { list-style: none; margin-top: 12px; }
+  .points li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-size: 1.05rem;
+    opacity: 0.85;
+  }
+  .points li:last-child { border: none; }
+  .points li::before { content: "→ "; opacity: 0.5; }
+
+  /* Flujo */
+  .flujo {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .flujo-box {
+    border-radius: 10px;
+    padding: 18px 24px;
+    text-align: center;
+    min-width: 160px;
+  }
+  .flujo-box h4 { font-size: 1rem; margin-bottom: 4px; }
+  .flujo-box p  { font-size: 0.8rem; opacity: 0.7; }
+  .fb-view  { background: #0d0d2e; border: 2px solid #4444cc; }
+  .fb-ctrl  { background: #2e2800; border: 2px solid #c8a000; }
+  .fb-model { background: #0d2e0d; border: 2px solid #2e7d2e; }
+  .fb-csv   { background: #1a1a1a; border: 2px solid #555; }
+
+  .arrow {
+    font-size: 1.8rem;
+    opacity: 0.4;
+    padding: 0 8px;
+  }
+
+  /* Resumen */
+  .resumen-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 20px;
+  }
+
+  .resumen-item {
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .ri-model { background: #0d2e0d; border: 1px solid #2e7d2e; }
+  .ri-ctrl  { background: #2e2800; border: 1px solid #7a6500; }
+  .ri-view  { background: #0d0d2e; border: 1px solid #2e2ea0; }
+  .resumen-item h4 { font-size: 1.1rem; margin-bottom: 8px; }
+  .resumen-item p  { font-size: 0.9rem; opacity: 0.7; }
+
+  /* Navegación */
+  .nav {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+  }
+
+  .nav button {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+  }
+  .nav button:hover { background: rgba(255,255,255,0.2); }
+  .nav button:disabled { opacity: 0.3; cursor: default; }
+
+  .counter {
+    font-size: 0.9rem;
+    opacity: 0.4;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  /* Dots */
+  .dots {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .dot.active { background: white; transform: scale(1.3); }
+
+  .file-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    font-family: monospace;
+    opacity: 0.7;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="slides">
+
+  <!-- SLIDE 1: Título -->
+  <div class="slide slide-title active">
+    <h3>Programación 3</h3>
+    <h1>MVC con Windows Forms</h1>
+    <p class="subtitle">Modelo — Vista — Controlador</p>
+    <p class="subtitle" style="margin-top:32px; font-size:1rem;">Usa las flechas del teclado o los botones para navegar</p>
+  </div>
+
+  <!-- SLIDE 2: ¿Qué es MVC? -->
+  <div class="slide slide-mvc">
+    <h2>¿Qué es MVC?</h2>
+    <p style="max-width:700px; text-align:center; margin-bottom:36px;">
+      Es un patrón que divide la aplicación en tres capas con responsabilidades distintas.
+      Cada capa hace una sola cosa y no se mete en el trabajo de las otras.
+    </p>
+    <div class="mvc-cards">
+      <div class="card card-model">
+        <div class="icon">🗄️</div>
+        <h4 style="color:#7dff7d;">Model</h4>
+        <p>Representa los datos y sabe cómo guardarlos, leerlos y modificarlos.</p>
+      </div>
+      <div class="card card-ctrl">
+        <div class="icon">⚙️</div>
+        <h4 style="color:#ffd966;">Controller</h4>
+        <p>Contiene la lógica del negocio. Valida y decide qué hacer con los datos.</p>
+      </div>
+      <div class="card card-view">
+        <div class="icon">🖥️</div>
+        <h4 style="color:#8888ff;">View</h4>
+        <p>Es lo que ve el usuario. Muestra datos y captura acciones (clics, texto).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Estructura del proyecto -->
+  <div class="slide slide-mvc">
+    <h2>Estructura del proyecto</h2>
+    <div class="code-block" style="border-color:#555; max-width:560px; font-size:1rem;">
+<span class="cmt">app inventario/</span>
+├── <span style="color:#8888ff;">views/</span>
+│   └── <span style="color:#8888ff;">Productos.cs</span>       <span class="cmt">← VIEW</span>
+│
+├── <span style="color:#ffd966;">controllers/</span>
+│   └── <span style="color:#ffd966;">Productos.cs</span>       <span class="cmt">← CONTROLLER</span>
+│
+├── <span style="color:#7dff7d;">models/</span>
+│   └── <span style="color:#7dff7d;">Producto.cs</span>        <span class="cmt">← MODEL</span>
+│
+└── <span class="cmt">bd/</span>
+    └── <span class="cmt">productos.csv       ← Datos persistidos</span>
+    </div>
+    <p style="margin-top:28px; opacity:0.6; font-size:0.95rem;">
+      Cada carpeta = una capa. El nombre del archivo es el mismo en las tres capas a propósito.
+    </p>
+  </div>
+
+  <!-- SLIDE 4: MODEL (explicación) -->
+  <div class="slide slide-model">
+    <span class="badge badge-model">MODEL</span>
+    <div class="two-col">
+      <div class="col-text">
+        <h2>models/Producto.cs</h2>
+        <p>Representa un producto y sabe cómo <strong>persistir</strong> los datos en el archivo CSV.</p>
+        <ul class="points" style="margin-top:20px;">
+          <li>Define las propiedades del objeto</li>
+          <li>Crea una línea en el CSV</li>
+          <li>Lee todas las líneas del CSV</li>
+          <li>Busca por ID</li>
+          <li>Actualiza y elimina líneas</li>
+        </ul>
+        <p style="margin-top:20px; font-size:0.9rem; opacity:0.5;">
+          El Model no valida, no muestra mensajes.<br>Solo trabaja con los datos.
+        </p>
+      </div>
+      <div class="col-code">
+        <div class="file-tag">models/Producto.cs</div>
+        <div class="code-block code-model">
+<span class="kw">public class</span> <span class="type">Producto</span>
+{
+    <span class="kw">private const string</span> <span class="prop">RUTA</span> = <span class="str">"../db/productos.csv"</span>;
+
+    <span class="kw">public int</span>    <span class="prop">Id</span>          { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> <span class="prop">Descripcion</span> { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span>    <span class="prop">Precio</span>      { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">public void</span> <span class="fn">Crear</span>(<span class="kw">int</span> id, <span class="kw">string</span> desc, <span class="kw">int</span> precio)
+    {
+        <span class="type">File</span>.<span class="fn">AppendAllText</span>(<span class="prop">RUTA</span>, <span class="str">$"{id},{desc},{precio}\n"</span>);
+    }
+
+    <span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">Producto</span>&gt; <span class="fn">Listar</span>()
+    {
+        <span class="cmt">// Lee el CSV y retorna la lista</span>
+    }
+
+    <span class="kw">public</span> <span class="type">Producto</span> <span class="fn">Buscar</span>(<span class="kw">int</span> id) { <span class="cmt">...</span> }
+    <span class="kw">public void</span> <span class="fn">Actualizar</span>(...) { <span class="cmt">...</span> }
+    <span class="kw">public void</span> <span class="fn">Eliminar</span>(<span class="kw">int</span> id)  { <span class="cmt">...</span> }
+}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: CONTROLLER (explicación) -->
+  <div class="slide slide-ctrl">
+    <span class="badge badge-ctrl">CONTROLLER</span>
+    <div class="two-col">
+      <div class="col-text">
+        <h2>controllers/Productos.cs</h2>
+        <p>Contiene la <strong>lógica del negocio</strong>. Antes de tocar el Model, valida que todo esté bien.</p>
+        <ul class="points" style="margin-top:20px;">
+          <li>¿Ya existe ese ID?</li>
+          <li>¿El producto existe antes de eliminarlo?</li>
+          <li>Retorna <code style="color:#ffd966;">"ok"</code> o un mensaje de error</li>
+          <li>La View solo decide qué hacer con ese resultado</li>
+        </ul>
+        <p style="margin-top:20px; font-size:0.9rem; opacity:0.5;">
+          El Controller no sabe nada de botones ni grids.<br>
+          Solo recibe datos, valida y responde.
+        </p>
+      </div>
+      <div class="col-code">
+        <div class="file-tag">controllers/Productos.cs</div>
+        <div class="code-block code-ctrl">
+<span class="kw">public class</span> <span class="type">Productos</span>
+{
+    <span class="kw">public string</span> <span class="fn">Crear</span>(<span class="kw">int</span> id, <span class="kw">string</span> desc, <span class="kw">int</span> precio)
+    {
+        <span class="type">Producto</span> p = <span class="kw">new</span> <span class="type">Producto</span>();
+
+        <span class="kw">if</span> (p.<span class="fn">Buscar</span>(id) != <span class="kw">null</span>)
+            <span class="kw">return</span> <span class="str">"El producto con id "</span> + id + <span class="str">" ya existe."</span>;
+
+        p.<span class="fn">Crear</span>(id, desc, precio);
+        <span class="kw">return</span> <span class="str">"ok"</span>;
+    }
+
+    <span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">Producto</span>&gt; <span class="fn">Listar</span>()
+    {
+        <span class="kw">return new</span> <span class="type">Producto</span>().<span class="fn">Listar</span>();
+    }
+
+    <span class="kw">public string</span> <span class="fn">Eliminar</span>(<span class="kw">int</span> id) { <span class="cmt">...</span> }
+    <span class="kw">public string</span> <span class="fn">Actualizar</span>(...) { <span class="cmt">...</span> }
+}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: VIEW (explicación) -->
+  <div class="slide slide-view">
+    <span class="badge badge-view">VIEW</span>
+    <div class="two-col">
+      <div class="col-text">
+        <h2>views/Productos.cs</h2>
+        <p>Es el <strong>Windows Form</strong>. Captura lo que el usuario escribe, llama al Controller y muestra el resultado.</p>
+        <ul class="points" style="margin-top:20px;">
+          <li>Instancia el Controller</li>
+          <li>Al abrir el form, carga la lista</li>
+          <li>Al hacer clic en Guardar, llama a Crear</li>
+          <li>Si el resultado es "ok", recarga el grid</li>
+          <li>Si hay error, muestra un MessageBox</li>
+        </ul>
+        <p style="margin-top:20px; font-size:0.9rem; opacity:0.5;">
+          La View no valida ni toca el CSV.<br>
+          Solo se comunica con el Controller.
+        </p>
+      </div>
+      <div class="col-code">
+        <div class="file-tag">views/Productos.cs</div>
+        <div class="code-block code-view">
+<span class="kw">public partial class</span> <span class="type">Productos</span> : <span class="type">Form</span>
+{
+    <span class="kw">private</span> controllers.<span class="type">Productos</span> _controller
+        = <span class="kw">new</span> controllers.<span class="type">Productos</span>();
+
+    <span class="kw">private void</span> <span class="fn">Productos_Load</span>(...)
+    {
+        <span class="fn">CargarProductos</span>();
+    }
+
+    <span class="kw">private void</span> <span class="fn">CargarProductos</span>()
+    {
+        dataGridView1.DataSource = _controller.<span class="fn">Listar</span>();
+    }
+
+    <span class="kw">private void</span> <span class="fn">button1_Click</span>(...)  <span class="cmt">// Guardar</span>
+    {
+        <span class="kw">string</span> resultado = _controller.<span class="fn">Crear</span>(id, desc, precio);
+
+        <span class="kw">if</span> (resultado == <span class="str">"ok"</span>)  { <span class="fn">CargarProductos</span>(); <span class="fn">LimpiarCampos</span>(); }
+        <span class="kw">else</span>                    { <span class="type">MessageBox</span>.<span class="fn">Show</span>(resultado); }
+    }
+}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Flujo completo -->
+  <div class="slide slide-flujo">
+    <h2>Flujo completo</h2>
+    <p style="opacity:0.6;">¿Qué pasa cuando el usuario hace clic en <strong>Guardar</strong>?</p>
+    <div class="flujo">
+      <div class="flujo-box fb-view">
+        <h4 style="color:#8888ff;">VIEW</h4>
+        <p>Usuario llena los campos<br>y hace clic en Guardar</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flujo-box fb-ctrl">
+        <h4 style="color:#ffd966;">CONTROLLER</h4>
+        <p>Verifica que el ID<br>no exista ya</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flujo-box fb-model">
+        <h4 style="color:#7dff7d;">MODEL</h4>
+        <p>Escribe la nueva línea<br>en el CSV</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flujo-box fb-csv">
+        <h4 style="color:#aaa;">CSV</h4>
+        <p>productos.csv<br>actualizado</p>
+      </div>
+    </div>
+    <div class="flujo" style="margin-top:20px;">
+      <div class="flujo-box fb-view" style="min-width:200px;">
+        <h4 style="color:#8888ff;">VIEW</h4>
+        <p>Recibe "ok" → recarga el grid<br>Recibe error → MessageBox</p>
+      </div>
+      <div class="arrow">←</div>
+      <div class="flujo-box fb-ctrl" style="min-width:200px;">
+        <h4 style="color:#ffd966;">CONTROLLER</h4>
+        <p>Retorna <code style="color:#ffd966;">"ok"</code><br>o mensaje de error</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Resumen -->
+  <div class="slide slide-resumen">
+    <h2>Resumen</h2>
+    <div class="resumen-grid">
+      <div class="resumen-item ri-model">
+        <div style="font-size:2rem; margin-bottom:10px;">🗄️</div>
+        <h4 style="color:#7dff7d;">Model</h4>
+        <p><code style="color:#7dff7d;">models/Producto.cs</code></p>
+        <p style="margin-top:8px;">Propiedades + CRUD sobre el CSV. No valida, solo persiste datos.</p>
+      </div>
+      <div class="resumen-item ri-ctrl">
+        <div style="font-size:2rem; margin-bottom:10px;">⚙️</div>
+        <h4 style="color:#ffd966;">Controller</h4>
+        <p><code style="color:#ffd966;">controllers/Productos.cs</code></p>
+        <p style="margin-top:8px;">Lógica y validaciones. Retorna "ok" o un error. No sabe de la UI.</p>
+      </div>
+      <div class="resumen-item ri-view">
+        <div style="font-size:2rem; margin-bottom:10px;">🖥️</div>
+        <h4 style="color:#8888ff;">View</h4>
+        <p><code style="color:#8888ff;">views/Productos.cs</code></p>
+        <p style="margin-top:8px;">Windows Form. Captura eventos, llama al Controller y actualiza la UI.</p>
+      </div>
+    </div>
+    <p style="margin-top:36px; opacity:0.5; font-size:1rem;">
+      Regla de oro: cada capa habla solo con la capa de al lado. La View no toca el CSV. El Model no muestra MessageBox.
+    </p>
+  </div>
+
+</div>
+
+<!-- Navegación -->
+<div class="nav">
+  <button id="btnPrev" onclick="cambiar(-1)" disabled>← Anterior</button>
+  <span class="counter" id="counter">1 / 8</span>
+  <button id="btnNext" onclick="cambiar(1)">Siguiente →</button>
+</div>
+
+<!-- Dots -->
+<div class="dots" id="dots"></div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  const dots = document.getElementById('dots');
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => ir(i);
+    dots.appendChild(d);
+  });
+
+  function ir(n) {
+    slides[current].classList.remove('active');
+    dots.children[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    dots.children[current].classList.add('active');
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + slides.length;
+    document.getElementById('btnPrev').disabled = current === 0;
+    document.getElementById('btnNext').disabled = current === slides.length - 1;
+  }
+
+  function cambiar(dir) { ir(current + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  { if (current < slides.length - 1) cambiar(1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    { if (current > 0) cambiar(-1); }
+  });
+</script>
+</body>
+</html>

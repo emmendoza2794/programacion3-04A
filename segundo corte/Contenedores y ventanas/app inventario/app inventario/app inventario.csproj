@@ -127,8 +127,6 @@
     <Content Include="Resources\images\icons\productos.png" />
     <Content Include="Resources\images\logo.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="bd\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
