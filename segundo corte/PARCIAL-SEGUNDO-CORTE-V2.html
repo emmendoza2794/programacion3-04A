@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Parcial #2 — Programación III — Variante 2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: white;
+    padding: 20px 24px;
+    font-size: 0.85em;
+    color: #111;
+  }
+
+  h1 { font-size: 1.1em; margin-bottom: 2px; }
+  h3 { font-size: 0.95em; margin: 10px 0 4px; }
+  p, li { line-height: 1.6; }
+  ul, ol { padding-left: 18px; }
+  code { background: #e8e8e8; padding: 0 3px; border-radius: 2px; font-size: 0.92em; }
+  strong { color: #000; }
+
+  .header-line { font-size: 0.82em; color: #333; margin-top: 3px; }
+  .header-line b { color: #000; }
+
+  hr { border: none; border-top: 1px solid #ccc; margin: 10px 0; }
+
+  .top-cols { display: table; width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .col-left  { display: table-cell; width: 62%; vertical-align: top; border-right: 1px solid #ccc; padding-right: 18px; }
+  .col-right { display: table-cell; width: 38%; vertical-align: top; padding-left: 18px; }
+
+  .score-table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+  .score-table thead tr { background: #f0f0f0; }
+  .score-table th { padding: 4px 6px; text-align: left; border-bottom: 2px solid #bbb; }
+  .score-table td { padding: 3px 6px; border-bottom: 1px solid #ddd; }
+  .score-table .pts { text-align: right; font-weight: bold; }
+  .score-table .total td { font-weight: bold; border-top: 2px solid #bbb; background: #f7f7f7; }
+  .score-table .total .pts { font-size: 1.05em; }
+
+  .mock-section { margin-top: 12px; }
+
+  :root {
+    --accent: #1a7a3a;
+    --accent-dark: #0f5025;
+    --header-bg: linear-gradient(180deg, #d4f0de 0%, #b0dfc0 100%);
+    --header-border: #88c8a0;
+    --win-bg: #f0f0f0;
+    --grid-header: #e8e8e8;
+    --green: #1a7a3a;
+    --red: #c0392b;
+    --blue: #1a5fa8;
+  }
+
+  .win-form { background: var(--win-bg); border: 1px solid #999; color: #000; font-size: 0.85em; width: 100%; }
+  .win-titlebar { background: white; height: 24px; display: flex; justify-content: space-between; align-items: center; padding: 0 8px; font-size: 0.9em; border-bottom: 1px solid #ccc; }
+  .win-controls { display: flex; gap: 10px; color: #555; }
+
+  .win-header-panel { background: var(--header-bg); border-bottom: 1px solid var(--header-border); display: flex; align-items: center; gap: 10px; padding: 7px 14px; }
+  .win-header-panel .app-icon { font-size: 26px; line-height: 1; }
+  .win-header-panel .app-title { font-size: 1.2em; font-weight: bold; color: #0a3018; }
+  .win-header-panel .app-subtitle { font-size: 0.8em; color: #206030; margin-top: 1px; }
+
+  .form-body { padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
+
+  .group-box { border: 1px solid #c8c8c8; padding: 14px 8px 8px; position: relative; }
+  .group-label { position: absolute; top: -8px; left: 8px; background: var(--win-bg); padding: 0 4px; font-weight: bold; font-size: 0.82em; color: #333; }
+
+  .fields-grid { display: grid; grid-template-columns: 80px 1fr; gap: 3px 6px; align-items: center; }
+  .fl  { font-size: 0.85em; color: #333; text-align: right; }
+  .fi  { border: 1px solid #7a7a7a; background: white; padding: 2px 4px; font-size: 0.85em; width: 100%; }
+  .fi.dis { background: #f0f0f0; color: #666; }
+  .fsel { border: 1px solid #7a7a7a; background: white; padding: 2px 3px; font-size: 0.85em; width: 100%; }
+  .fdtp { border: 1px solid #7a7a7a; background: white; padding: 2px 4px; font-size: 0.85em; display: flex; justify-content: space-between; }
+
+  .win-btn { background: white; border: 1px solid #adadad; padding: 3px 11px; font-size: 0.82em; font-weight: bold; cursor: default; border-radius: 2px; white-space: nowrap; }
+  .win-btn.primary { background: var(--accent); color: white; border-color: var(--accent-dark); }
+  .win-btn.danger  { color: var(--red); border-color: #e0a0a0; }
+  .win-btn.warn    { color: #8a4500; border-color: #d0a060; }
+  .btn-row { display: flex; gap: 5px; margin-top: 6px; }
+
+  .dgv { width: 100%; border-collapse: collapse; font-size: 0.82em; border: 1px solid #aaa; }
+  .dgv thead tr { background: var(--grid-header); }
+  .dgv th { padding: 3px 6px; text-align: left; font-weight: bold; border-right: 1px solid #ccc; border-bottom: 1px solid #aaa; color: #333; }
+  .dgv td { padding: 2px 6px; border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e8e8e8; }
+  .dgv tr.sel td { background: var(--accent); color: white; }
+
+  .footer { margin-top: 10px; font-size: 0.8em; color: #333; }
+  .footer .warn { color: #c0392b; font-weight: bold; }
+
+  @media print {
+    @page { size: letter; margin: 10mm 12mm; }
+    body { padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Examen Parcial #2 — Programación III &nbsp;<span style="color:#1a7a3a; font-weight:normal;">— Variante 2</span></h1>
+<div class="header-line">
+  <b>Estudiante:</b> ___________________________________________________&nbsp;&nbsp;
+  <b>Grupo:</b> __________&nbsp;&nbsp;
+  <b>Fecha:</b> ______________
+</div>
+<div class="header-line" style="margin-top:3px;">
+  <b>Temas:</b> Windows Forms, Controles, Eventos, Manejo de Archivos (CSV) y Persistencia de datos.
+</div>
+
+<hr>
+
+<div class="top-cols">
+
+  <div class="col-left">
+    <h3>Ejercicio único: Sistema de Empleados — "Empresa TechWork" &nbsp;(5.0 Puntos)</h3>
+    <p><b>Objetivo:</b> Desarrollar un formulario de escritorio en <b>C# (Windows Forms, .NET Framework)</b> para gestionar el registro de empleados de una empresa. La aplicación debe guardar y recuperar datos desde un archivo <code>empleados.csv</code>.</p>
+
+    <h3>¿Qué debes hacer?</h3>
+    <ol>
+      <li><b>Registro:</b> Captura Nombre, Apellido, N° Documento, Cargo, Departamento, Fecha de ingreso, Salario y Estado (Activo / Inactivo). El <b>ID</b> se genera automáticamente (<code>EMP-001</code>, <code>EMP-002</code>…).</li>
+      <li><b>Guardar:</b> Valida que Nombre, Apellido y Documento no estén vacíos; luego agrega el empleado a la tabla y lo escribe en <code>empleados.csv</code>.</li>
+      <li><b>Visualización:</b> La tabla muestra todos los empleados. Al seleccionar una fila, sus datos se cargan en el formulario.</li>
+      <li><b>Actualizar / Eliminar:</b> Permite editar el empleado seleccionado o eliminarlo (con confirmación previa). En ambos casos el CSV se reescribe completo.</li>
+      <li><b>Carga inicial:</b> Al abrir la app se leen los registros de <code>empleados.csv</code>. Si no existe, inicia sin error.</li>
+    </ol>
+
+    <div style="margin-top:8px; font-size:0.88em; color:#444;">
+      <b>Nota Ejercicio: ______ / 5.0</b>
+    </div>
+  </div>
+
+  <div class="col-right">
+    <h3>Rúbrica de evaluación</h3>
+    <table class="score-table">
+      <thead>
+        <tr><th>Criterio</th><th class="pts">Pts</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Formulario con todos los campos y el ID automático</td><td class="pts">1.0</td></tr>
+        <tr><td>Guardar en CSV con validación de campos vacíos</td><td class="pts">1.0</td></tr>
+        <tr><td>Carga automática de <code>empleados.csv</code> al iniciar</td><td class="pts">0.5</td></tr>
+        <tr><td>Seleccionar fila → cargar datos en el formulario</td><td class="pts">0.5</td></tr>
+        <tr><td>Actualizar registro y reescribir el CSV</td><td class="pts">1.0</td></tr>
+        <tr><td>Eliminar con confirmación y actualizar el CSV</td><td class="pts">1.0</td></tr>
+        <tr class="total"><td>Total</td><td class="pts">5.0</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 10px; font-size: 0.85em;">
+      <p><b>Instrucciones:</b></p>
+      <ul style="margin-top:4px;">
+        <li>Usa la clase <code>File</code> para leer y escribir CSV.</li>
+        <li>Puedes usar los controles y la distribución que prefieras, siempre que el resultado sea funcional.</li>
+        <li>El proyecto debe compilar y ejecutarse sin errores.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+
+<div class="mock-section">
+  <div class="win-form">
+    <div class="win-titlebar">
+      <span>Gestión de Empleados — TechWork S.A.S.</span>
+      <div class="win-controls"><span>—</span><span>❐</span><span>✕</span></div>
+    </div>
+
+    <div class="win-header-panel">
+      <div class="app-icon">💼</div>
+      <div>
+        <div class="app-title">TechWork</div>
+        <div class="app-subtitle">Sistema de registro y gestión de empleados</div>
+      </div>
+    </div>
+
+    <div class="form-body">
+
+      <div class="group-box">
+        <span class="group-label">Datos del Empleado</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
+
+          <div class="fields-grid">
+            <span class="fl">ID:</span>
+            <input class="fi dis" type="text" value="EMP-003" readonly>
+
+            <span class="fl">Nombre:</span>
+            <input class="fi" type="text" placeholder="Ej: Carlos">
+
+            <span class="fl">Apellido:</span>
+            <input class="fi" type="text" placeholder="Ej: Ramírez">
+
+            <span class="fl">N° Documento:</span>
+            <input class="fi" type="text" placeholder="CC / CE">
+
+            <span class="fl">F. Ingreso:</span>
+            <div class="fdtp"><span>07/05/2026</span><span style="color:#888; font-size:0.85em;">📅</span></div>
+          </div>
+
+          <div class="fields-grid">
+            <span class="fl">Cargo:</span>
+            <input class="fi" type="text" placeholder="Ej: Desarrollador">
+
+            <span class="fl">Departamento:</span>
+            <select class="fsel">
+              <option>Tecnología</option>
+              <option>Recursos Humanos</option>
+              <option>Contabilidad</option>
+              <option>Ventas</option>
+              <option>Operaciones</option>
+            </select>
+
+            <span class="fl">Salario:</span>
+            <input class="fi" type="text" placeholder="Ej: 2500000">
+
+            <span class="fl">Estado:</span>
+            <select class="fsel">
+              <option>Activo</option>
+              <option>Inactivo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top: 7px;">
+          <button class="win-btn primary">💾 Guardar</button>
+          <button class="win-btn warn">🔄 Actualizar</button>
+          <button class="win-btn danger">🗑️ Eliminar</button>
+          <button class="win-btn" style="margin-left: auto;">🧹 Limpiar</button>
+        </div>
+      </div>
+
+      <div class="group-box">
+        <span class="group-label">Lista de Empleados</span>
+        <table class="dgv">
+          <thead>
+            <tr>
+              <th style="width:55px;">ID</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th style="width:85px;">N° Documento</th>
+              <th>Cargo</th>
+              <th>Departamento</th>
+              <th style="width:70px;">F. Ingreso</th>
+              <th style="width:76px;">Salario</th>
+              <th style="width:52px;">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>EMP-001</td><td>Sofía</td><td>Torres</td><td>1090011223</td>
+              <td>Analista</td><td>Tecnología</td><td>10/01/2024</td><td>3.200.000</td><td>Activo</td>
+            </tr>
+            <tr class="sel">
+              <td>EMP-002</td><td>Jorge</td><td>Peña</td><td>1075334400</td>
+              <td>Contador</td><td>Contabilidad</td><td>03/06/2023</td><td>2.800.000</td><td>Activo</td>
+            </tr>
+            <tr>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <hr style="margin: 8px 0;">
+  <span class="warn">⚠ ADVERTENCIA:</span> Estudiante detectado hablando, copiando o usando IA tendrá un "bono extra" de <b>−1.0</b> en la nota definitiva.
+</div>
+
+</body>
+</html>

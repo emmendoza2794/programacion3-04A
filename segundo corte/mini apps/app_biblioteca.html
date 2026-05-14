@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mini App: Sistema de Biblioteca — Programación III</title>
+<style>
+  :root {
+    --win-bg: #f0f0f0;
+    --accent: #6b3fa0;
+    --accent-dark: #4e2d78;
+    --header-bg: linear-gradient(180deg, #ede0ff 0%, #dcc8f8 100%);
+    --header-border: #c0a0e8;
+    --grid-header: #e8e8e8;
+    --green: #27ae60;
+    --red: #c0392b;
+    --orange: #e67e22;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: white;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+  }
+
+  .card {
+    width: 900px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 30px;
+  }
+
+  .card-brief { border-left: 6px solid var(--accent); }
+  .card-brief h2 { color: var(--accent); margin-bottom: 12px; font-size: 18px; }
+  .card-brief h3 { color: #333; margin: 16px 0 6px; font-size: 14px; }
+  .card-brief p, .card-brief li { font-size: 13px; line-height: 1.7; color: #333; }
+  .card-brief ul, .card-brief ol { padding-left: 20px; }
+  .card-brief code { background: #e8e8e8; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+
+  .csv-box {
+    background: #1e1e1e; color: #9cdcfe;
+    font-family: Consolas, monospace; font-size: 12px;
+    padding: 10px 14px; border-radius: 4px; margin: 8px 0;
+  }
+  .csv-box .csv-header { color: #4ec9b0; }
+  .csv-box .csv-comment { color: #6a9955; }
+
+  .mockup-section { margin-top: 20px; }
+  .mockup-title {
+    font-size: 14px; font-weight: bold; color: #333;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+  }
+  .tag {
+    font-size: 11px; background: #f0eaff; color: var(--accent);
+    border: 1px solid #c8a8f0; border-radius: 10px; padding: 2px 8px; font-weight: normal;
+  }
+
+  /* WINDOWS FORM SHELL */
+  .win-form { background: var(--win-bg); border: 1px solid #999; margin: 0 auto; color: #000; font-size: 13px; }
+  .win-titlebar {
+    background: white; height: 30px; display: flex; justify-content: space-between;
+    align-items: center; padding: 0 10px; font-size: 12px; border-bottom: 1px solid #ccc;
+  }
+  .win-controls { display: flex; gap: 14px; font-size: 15px; color: #555; }
+
+  /* HEADER PANEL */
+  .win-header-panel {
+    background: var(--header-bg); border-bottom: 1px solid var(--header-border);
+    display: flex; align-items: center; gap: 16px; padding: 14px 20px;
+  }
+  .win-header-panel .app-icon { font-size: 42px; line-height: 1; }
+  .win-header-panel .app-title { font-size: 22px; font-weight: bold; color: #3a1a6a; letter-spacing: 0.5px; }
+  .win-header-panel .app-subtitle { font-size: 12px; color: #6a4a90; margin-top: 2px; }
+
+  /* NAV BUTTONS */
+  .nav-grid {
+    display: grid; grid-template-columns: repeat(4, 120px);
+    gap: 14px; padding: 28px 20px; justify-content: center;
+  }
+  .nav-btn {
+    width: 120px; height: 115px; background: white; border: 2px solid #d0d0d0;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 8px; cursor: default; border-radius: 4px;
+  }
+  .nav-btn .nav-icon { font-size: 38px; line-height: 1; }
+  .nav-btn .nav-label { font-size: 12px; font-weight: bold; color: #333; }
+  .nav-btn.active { border-color: var(--accent); background: #f5eeff; box-shadow: 0 0 0 1px var(--accent); }
+
+  /* SPLIT CONTAINER */
+  .split-container { display: flex; height: 340px; }
+  .split-panel-left { background: var(--win-bg); border-right: 4px solid #b0b0b0; padding: 10px; overflow: hidden; }
+  .split-panel-right { flex: 1; background: var(--win-bg); padding: 10px; overflow: hidden; }
+
+  /* GROUP BOX */
+  .group-box { border: 1px solid #c8c8c8; padding: 22px 10px 10px; position: relative; margin-bottom: 10px; }
+  .group-box-label {
+    position: absolute; top: -10px; left: 10px;
+    background: var(--win-bg); padding: 0 5px;
+    font-weight: bold; font-size: 12px; color: #333;
+  }
+
+  /* FIELDS */
+  .table-layout { display: grid; grid-template-columns: 90px 1fr; gap: 5px 8px; align-items: center; margin-bottom: 8px; }
+  .field-label { font-size: 12px; color: #333; text-align: right; }
+  .field-input { border: 1px solid #7a7a7a; background: white; padding: 3px 5px; font-size: 12px; width: 100%; }
+  .field-input.disabled { background: #f0f0f0; color: #777; }
+  .field-select { border: 1px solid #7a7a7a; background: white; padding: 2px 4px; font-size: 12px; width: 100%; }
+
+  /* DATAGRIDVIEW */
+  .datagridview { width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #aaa; }
+  .datagridview thead tr { background: var(--grid-header); border-bottom: 1px solid #aaa; }
+  .datagridview th { padding: 5px 8px; text-align: left; font-weight: bold; border-right: 1px solid #ccc; color: #333; }
+  .datagridview td { padding: 4px 8px; border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e8e8e8; color: #333; }
+  .datagridview tr.selected td { background: var(--accent); color: white; }
+  .datagridview tr.overdue td { background: #fff0f0; }
+  .datagridview td.green { color: var(--green); font-weight: bold; }
+  .datagridview td.red   { color: var(--red);   font-weight: bold; }
+  .datagridview td.orange{ color: var(--orange); font-weight: bold; }
+
+  /* BUTTONS */
+  .win-btn { background: white; border: 1px solid #adadad; padding: 5px 16px; font-size: 12px; font-weight: bold; cursor: default; border-radius: 2px; white-space: nowrap; }
+  .win-btn.primary { background: var(--accent); color: white; border-color: var(--accent-dark); }
+  .win-btn.danger  { color: var(--red); border-color: #e0a0a0; }
+  .btn-row { display: flex; gap: 6px; margin-top: 8px; justify-content: flex-end; }
+
+  /* STATUS STRIP */
+  .win-statusstrip { background: var(--win-bg); border-top: 1px solid #ccc; display: flex; font-size: 11px; color: #555; padding: 3px 6px; gap: 0; }
+  .status-item { padding: 1px 10px; border-right: 1px solid #ccc; }
+  .status-item.spring { margin-left: auto; border-right: none; border-left: 1px solid #ccc; }
+  .status-item.green  { color: var(--green); font-weight: bold; }
+  .status-item.red    { color: var(--red);   font-weight: bold; }
+  .status-item.orange { color: var(--orange); font-weight: bold; }
+
+  /* SUMMARY */
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+  .summary-box { background: white; border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
+  .summary-box .sv { font-size: 20px; font-weight: bold; color: #3a1a6a; }
+  .summary-box .sl { font-size: 10px; color: #777; margin-top: 2px; }
+  .summary-box.green  .sv { color: var(--green); }
+  .summary-box.red    .sv { color: var(--red);   }
+  .summary-box.orange .sv { color: var(--orange); }
+
+  /* FILTER */
+  .filter-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; padding: 10px; background: white; border: 1px solid #ccc; margin-bottom: 10px; }
+  .filter-row label { font-size: 11px; color: #555; font-weight: bold; display: block; margin-bottom: 3px; }
+
+  @media print {
+    body { padding: 0; display: block; }
+    .card { width: 100%; box-shadow: none; border: 1px solid #ccc; break-after: page; page-break-after: always; }
+    .card:last-child { break-after: auto; page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!--  CARD 1: DESCRIPCIÓN Y ARQUITECTURA                          -->
+<!-- ============================================================ -->
+<div class="card card-brief">
+  <h2>📚 Mini App: Sistema de Biblioteca</h2>
+
+  <p>Desarrolla una aplicación de escritorio en C# (Windows Forms) para la gestión básica de una biblioteca: registro de libros, préstamos, devoluciones e informes del estado de la colección.</p>
+
+  <h3>📂 Estructura de formularios</h3>
+  <ul>
+    <li><strong>FormPrincipal</strong> — Navegación con 4 botones grandes. Abre los formularios hijos.</li>
+    <li><strong>FormLibros</strong> — Registrar y listar libros del catálogo. Persiste en <code>libros.csv</code>.</li>
+    <li><strong>FormPrestamos</strong> — Registrar préstamos a estudiantes. Persiste en <code>prestamos.csv</code>.</li>
+    <li><strong>FormDevoluciones</strong> — Registrar devoluciones y detectar mora. Persiste en <code>devoluciones.csv</code>.</li>
+    <li><strong>FormInformes</strong> — Ver libros disponibles, en préstamo y préstamos vencidos.</li>
+  </ul>
+
+  <h3>📄 Estructura de los archivos CSV</h3>
+  <div class="csv-box">
+    <div class="csv-comment">// libros.csv</div>
+    <div class="csv-header">ISBN,Titulo,Autor,Editorial,Categoria,Cantidad</div>
+    <div>978-1,Cien años de soledad,García Márquez,Sudamericana,Literatura,3</div>
+    <div>978-2,El Quijote,Miguel de Cervantes,RAE,Clásicos,2</div>
+  </div>
+  <div class="csv-box">
+    <div class="csv-comment">// prestamos.csv</div>
+    <div class="csv-header">IDPrestamo,FechaPrestamo,ISBN,Titulo,NombreEstudiante,FechaEsperada</div>
+    <div>001,10/04/2026,978-1,Cien años de soledad,Juan Pérez,24/04/2026</div>
+  </div>
+  <div class="csv-box">
+    <div class="csv-comment">// devoluciones.csv</div>
+    <div class="csv-header">IDPrestamo,FechaDevolucion,ISBN,NombreEstudiante,EnMora</div>
+    <div>001,22/04/2026,978-1,Juan Pérez,No</div>
+  </div>
+
+  <h3>⚙️ Requisitos técnicos por formulario</h3>
+  <ol>
+    <li><strong>FormLibros:</strong> Al guardar, usa <code>File.AppendAllText</code>. El campo <em>Disponibles</em> se calcula: <code>Cantidad − préstamos activos + devoluciones</code> y se muestra en el <code>DataGridView</code>.</li>
+    <li><strong>FormPréstamos:</strong> El <code>ComboBox</code> de libros se llena desde <code>libros.csv</code>. Solo permite prestar si <em>Disponibles &gt; 0</em>. La fecha esperada se puede editar; por defecto es <code>DateTime.Now.AddDays(14)</code>.</li>
+    <li><strong>FormDevoluciones:</strong> El usuario ingresa el <em>ID de préstamo</em>. El programa busca en <code>prestamos.csv</code> con <code>File.ReadAllLines</code>. Si <code>DateTime.Now &gt; FechaEsperada</code>, registra <em>EnMora = Sí</em> y muestra una advertencia.</li>
+    <li><strong>FormInformes:</strong> Cruza los tres CSV para calcular disponibilidad real. Resalta en rojo los préstamos vencidos comparando <code>FechaEsperada</code> con <code>DateTime.Now</code>.</li>
+  </ol>
+
+  <h3>🧩 Componentes a usar</h3>
+  <ul>
+    <li><code>TableLayoutPanel</code> — Cuadrícula de botones y formularios de datos</li>
+    <li><code>SplitContainer</code> — División registro / listado en formularios hijos</li>
+    <li><code>GroupBox</code> — Agrupación de secciones</li>
+    <li><code>Panel</code> — Header con icono y título</li>
+    <li><code>DataGridView</code> — Tablas de libros, préstamos y reportes</li>
+    <li><code>DateTimePicker</code> — Selección de fecha esperada de devolución</li>
+    <li><code>ComboBox</code> — Selección de libro al prestar</li>
+    <li><code>StatusStrip</code> — Contadores de libros prestados / disponibles</li>
+  </ul>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FORM 1: FormPrincipal                                        -->
+<!-- ============================================================ -->
+<div class="card">
+  <div class="mockup-title">
+    Form 1: FormPrincipal
+    <span class="tag">TableLayoutPanel</span>
+    <span class="tag">Panel (header)</span>
+    <span class="tag">Button (FlatStyle)</span>
+  </div>
+
+  <div class="win-form" style="width:560px;">
+    <div class="win-titlebar">
+      <span>Sistema de Biblioteca — Principal</span>
+      <div class="win-controls"><span>—</span><span>❐</span><span>✕</span></div>
+    </div>
+    <div class="win-header-panel">
+      <div class="app-icon">📚</div>
+      <div>
+        <div class="app-title">BIBLIOTECA DIGITAL</div>
+        <div class="app-subtitle">Selecciona un módulo para comenzar</div>
+      </div>
+    </div>
+    <div class="nav-grid">
+      <div class="nav-btn">
+        <div class="nav-icon">📖</div>
+        <div class="nav-label">Libros</div>
+      </div>
+      <div class="nav-btn active">
+        <div class="nav-icon">📋</div>
+        <div class="nav-label">Préstamos</div>
+      </div>
+      <div class="nav-btn">
+        <div class="nav-icon">↩️</div>
+        <div class="nav-label">Devoluciones</div>
+      </div>
+      <div class="nav-btn">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">Informes</div>
+      </div>
+    </div>
+    <div class="win-statusstrip">
+      <span class="status-item">✔ Listo</span>
+      <span class="status-item orange">Préstamos activos: 3</span>
+      <span class="status-item spring">v1.0 — Programación III</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FORM 2: FormLibros                                           -->
+<!-- ============================================================ -->
+<div class="card">
+  <div class="mockup-title">
+    Form 2: FormLibros
+    <span class="tag">SplitContainer</span>
+    <span class="tag">TableLayoutPanel</span>
+    <span class="tag">DataGridView</span>
+    <span class="tag">libros.csv</span>
+  </div>
+
+  <div class="win-form" style="width:860px;">
+    <div class="win-titlebar">
+      <span>Gestión de Libros</span>
+      <div class="win-controls"><span>—</span><span>❐</span><span>✕</span></div>
+    </div>
+    <div class="win-header-panel">
+      <div class="app-icon">📖</div>
+      <div>
+        <div class="app-title">Libros</div>
+        <div class="app-subtitle">Catálogo y disponibilidad de ejemplares</div>
+      </div>
+    </div>
+
+    <div class="split-container">
+      <div class="split-panel-left" style="width:270px;">
+        <div class="group-box" style="height:auto;">
+          <span class="group-box-label">Registrar Libro</span>
+          <div class="table-layout" style="grid-template-columns:80px 1fr;">
+            <span class="field-label">ISBN:</span>
+            <input class="field-input" type="text" placeholder="Ej: 978-3">
+
+            <span class="field-label">Título:</span>
+            <input class="field-input" type="text" placeholder="Nombre del libro">
+
+            <span class="field-label">Autor:</span>
+            <input class="field-input" type="text" placeholder="Apellido, Nombre">
+
+            <span class="field-label">Editorial:</span>
+            <input class="field-input" type="text" placeholder="Ej: Alfaguara">
+
+            <span class="field-label">Categoría:</span>
+            <select class="field-select">
+              <option>Literatura</option>
+              <option>Ciencias</option>
+              <option>Historia</option>
+              <option>Tecnología</option>
+              <option>Clásicos</option>
+            </select>
+
+            <span class="field-label">Cantidad:</span>
+            <input class="field-input" type="text" placeholder="Nº de ejemplares">
+          </div>
+          <div class="btn-row" style="justify-content:stretch;">
+            <button class="win-btn primary" style="flex:1;">💾 Registrar Libro</button>
+          </div>
+          <div class="btn-row" style="justify-content:stretch; margin-top:4px;">
+            <button class="win-btn" style="flex:1;">🧹 Limpiar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-panel-right">
+        <div class="group-box" style="height:auto;">
+          <span class="group-box-label">Catálogo de Libros</span>
+          <table class="datagridview" style="margin-bottom:8px;">
+            <thead>
+              <tr>
+                <th style="width:70px;">ISBN</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th style="width:55px;">Total</th>
+                <th style="width:70px;">Disponibles</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>978-1</td><td>Cien años de soledad</td><td>García Márquez</td>
+                <td style="text-align:right;">3</td><td class="green" style="text-align:right;">2</td>
+              </tr>
+              <tr class="selected">
+                <td>978-2</td><td>El Quijote</td><td>Cervantes</td>
+                <td style="text-align:right;">2</td><td style="text-align:right; color:white; font-weight:bold;">1</td>
+              </tr>
+              <tr>
+                <td>978-3</td><td>El Principito</td><td>Saint-Exupéry</td>
+                <td style="text-align:right;">4</td><td class="green" style="text-align:right;">4</td>
+              </tr>
+              <tr>
+                <td>978-4</td><td>1984</td><td>George Orwell</td>
+                <td style="text-align:right;">2</td><td class="red" style="text-align:right;">0</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="btn-row">
+            <button class="win-btn">🔄 Actualizar</button>
+            <button class="win-btn danger">🗑️ Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="win-statusstrip">
+      <span class="status-item">✔ Listo</span>
+      <span class="status-item">4 títulos registrados</span>
+      <span class="status-item red">Agotados: 1</span>
+      <span class="status-item spring">libros.csv</span>
+    </div>
+  </div>
+
+  <p style="font-size:12px; color:#666; text-align:center; margin-top:10px;">
+    Disponibles = Cantidad − préstamos activos sin devolver (cruzando <code>prestamos.csv</code> y <code>devoluciones.csv</code>)
+  </p>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FORM 3: FormPrestamos                                        -->
+<!-- ============================================================ -->
+<div class="card">
+  <div class="mockup-title">
+    Form 3: FormPréstamos
+    <span class="tag">ComboBox (desde CSV)</span>
+    <span class="tag">DateTimePicker</span>
+    <span class="tag">Validación disponibilidad</span>
+    <span class="tag">prestamos.csv</span>
+  </div>
+
+  <div class="win-form" style="width:860px;">
+    <div class="win-titlebar">
+      <span>Préstamos de Libros</span>
+      <div class="win-controls"><span>—</span><span>❐</span><span>✕</span></div>
+    </div>
+    <div class="win-header-panel">
+      <div class="app-icon">📋</div>
+      <div>
+        <div class="app-title">Préstamos</div>
+        <div class="app-subtitle">Registro de libros prestados a estudiantes</div>
+      </div>
+    </div>
+
+    <div class="split-container">
+      <div class="split-panel-left" style="width:285px;">
+        <div class="group-box" style="height:auto;">
+          <span class="group-box-label">Registrar Préstamo</span>
+          <div class="table-layout" style="grid-template-columns:95px 1fr;">
+            <span class="field-label">ID Préstamo:</span>
+            <input class="field-input disabled" type="text" value="004" readonly>
+
+            <span class="field-label">Fecha:</span>
+            <input class="field-input disabled" type="text" value="19/04/2026" readonly>
+
+            <span class="field-label">Libro:</span>
+            <select class="field-select">
+              <option>978-1 — Cien años de soledad</option>
+              <option>978-3 — El Principito</option>
+            </select>
+
+            <span class="field-label">Estudiante:</span>
+            <input class="field-input" type="text" placeholder="Nombre completo">
+
+            <span class="field-label">F. Devolución:</span>
+            <input class="field-input" type="text" value="03/05/2026">
+          </div>
+
+          <div style="background:#eef6ff; border:1px solid #a8cce8; padding:7px 10px; margin:8px 0; font-size:11px; color:#1a3a5c;">
+            📖 <strong>El Principito</strong><br>
+            ✅ Disponibles: <strong>4 ejemplares</strong>
+          </div>
+
+          <div class="btn-row" style="justify-content:stretch;">
+            <button class="win-btn primary" style="flex:1;">📋 Registrar Préstamo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-panel-right">
+        <div class="group-box" style="height:auto;">
+          <span class="group-box-label">Préstamos Activos</span>
+          <table class="datagridview" style="margin-bottom:8px;">
+            <thead>
+              <tr>
+                <th style="width:35px;">ID</th>
+                <th style="width:75px;">F. Préstamo</th>
+                <th>Libro</th>
+                <th>Estudiante</th>
+                <th style="width:80px;">F. Esperada</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="overdue">
+                <td>001</td><td>05/04/2026</td><td>1984</td>
+                <td>Ana Gómez</td><td class="red">12/04/2026</td>
+              </tr>
+              <tr>
+                <td>002</td><td>10/04/2026</td><td>El Quijote</td>
+                <td>Pedro López</td><td>24/04/2026</td>
+              </tr>
+              <tr class="selected">
+                <td>003</td><td>15/04/2026</td><td>Cien años...</td>
+                <td>María Ruiz</td><td>29/04/2026</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="background:#fff0f0; border:1px solid #e0a0a0; padding:6px 10px; font-size:11px; color:var(--red); margin-bottom:8px;">
+            ⚠️ <strong>1 préstamo vencido</strong> (resaltado en rojo). Notificar al estudiante.
+          </div>
+          <div class="btn-row">
+            <button class="win-btn">🔄 Actualizar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="win-statusstrip">
+      <span class="status-item">✔ Listo</span>
+      <span class="status-item orange">Activos: 3</span>
+      <span class="status-item red">Vencidos: 1</span>
+      <span class="status-item spring">prestamos.csv</span>
+    </div>
+  </div>
+
+  <p style="font-size:12px; color:#666; text-align:center; margin-top:10px;">
+    La fecha esperada por defecto: <code>dtpFecha.Value = DateTime.Now.AddDays(14);</code><br>
+    El ID se genera auto: <code>"00" + (totalPrestamos + 1)</code> — leer líneas del CSV para contar.
+  </p>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FORM 4: FormDevoluciones                                     -->
+<!-- ============================================================ -->
+<div class="card">
+  <div class="mockup-title">
+    Form 4: FormDevoluciones
+    <span class="tag">Búsqueda en CSV</span>
+    <span class="tag">Detección de mora</span>
+    <span class="tag">DateTime.Compare</span>
+    <span class="tag">devoluciones.csv</span>
+  </div>
+
+  <div class="win-form" style="width:860px;">
+    <div class="win-titlebar">
+      <span>Devoluciones</span>
+      <div class="win-controls"><span>—</span><span>❐</span><span>✕</span></div>
+    </div>
+    <div class="win-header-panel">
+      <div class="app-icon">↩️</div>
+      <div>
+        <div class="app-title">Devoluciones</div>
+        <div class="app-subtitle">Registro de libros devueltos y control de mora</div>
+      </div>
+    </div>
+
+    <div class="split-container">
+      <div class="split-panel-left" style="width:290px;">
+        <div class="group-box" style="height:auto;">
+          <span class="group-box-label">Registrar Devolución</span>
+
+          <div class="table-layout" style="grid-template-columns:95px 1fr; margin-bottom:4px;">
+            <span class="field-label">ID Préstamo:</span>
+            <div style="display:flex; gap:4px;">
+              <input class="field-input" type="text" placeholder="Ej: 002" style="flex:1;">
+              <button class="win-btn" style="padding:3px 8px; font-size:11px;">🔍</button>
+            </div>
+          </div>
+
+          <!-- Panel de información del préstamo encontrado -->
+          <div style="background:#f8f9fa; border:1px solid #ddd; padding:9px; font-size:12px; line-height:1.8; margin-bottom:8px;">
+            <div><strong>Préstamo:</strong> #002</div>
+            <div><strong>Libro:</strong> El Quijote</div>
+            <div><strong>Estudiante:</strong> Pedro López</div>
+            <div><strong>F. Esperada:</strong> 24/04/2026</div>
+            <div><strong>F. Devolución:</strong>
+              <input class="field-input disabled" type="text" value="19/04/2026" style="width:auto; display:inline;" readonly>
+            </div>
+          </div>
+
+          <!-- Estado: sin mora -->
+          <div style="background:#eafaf1; border:1px solid #a8e0c0; padding:7px 10px; font-size:11px; color:#1a6a3a; margin-bottom:8px;">
+            ✅ Devuelto a tiempo — <strong>Sin mora</strong>
+          </div>
+
+          <!-- Estado mora (ejemplo comentado visualmente) -->
+          <div style="background:#fff0f0; border:1px solid #e0a0a0; padding:7px 10px; font-size:11px; color:var(--red); margin-bottom:8px; opacity:0.5;">
+            ⚠️ Devuelto con <strong>7 días de mora</strong> (ID: 001)
+          </div>
+
+          <div class="btn-row" style="justify-content:stretch;">
+            <button class="win-btn primary" style="flex:1;">↩️ Confirmar Devolución</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-panel-right">
+        <div class="group-box" style="height:auto;">
+          <span class="group-box-label">Historial de Devoluciones</span>
+          <table class="datagridview" style="margin-bottom:8px;">
+            <thead>
+              <tr>
+                <th style="width:35px;">ID</th>
+                <th>Libro</th>
+                <th>Estudiante</th>
+                <th style="width:80px;">F. Devol.</th>
+                <th style="width:60px;">Mora</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>001</td><td>1984</td><td>Ana Gómez</td>
+                <td>19/04/2026</td><td class="red">Sí</td>
+              </tr>
+              <tr class="selected">
+                <td>002</td><td>El Quijote</td><td>Pedro López</td>
+                <td>19/04/2026</td><td class="green">No</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="btn-row">
+            <button class="win-btn">🔄 Actualizar</button>
+          </div>
+
+          <div style="background:#f8f9fa; border:1px solid #ddd; padding:9px 12px; font-size:11px; color:#555; margin-top:10px; line-height:1.7;">
+            <strong>Lógica de detección de mora:</strong><br>
+            <code>DateTime fechaEsperada = DateTime.Parse(campos[5]);</code><br>
+            <code>bool enMora = DateTime.Now > fechaEsperada;</code><br>
+            Si <code>enMora</code> → guardar <code>"Sí"</code> en CSV y mostrar advertencia.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="win-statusstrip">
+      <span class="status-item">✔ Listo</span>
+      <span class="status-item">Devoluciones hoy: 2</span>
+      <span class="status-item red">Con mora: 1</span>
+      <span class="status-item spring">devoluciones.csv</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FORM 5: FormInformes                                         -->
+<!-- ============================================================ -->
+<div class="card">
+  <div class="mockup-title">
+    Form 5: FormInformes
+    <span class="tag">Cruce de 3 CSV</span>
+    <span class="tag">Resumen calculado</span>
+    <span class="tag">Préstamos vencidos</span>
+  </div>
+
+  <div class="win-form" style="width:860px;">
+    <div class="win-titlebar">
+      <span>Informes de Biblioteca</span>
+      <div class="win-controls"><span>—</span><span>❐</span><span>✕</span></div>
+    </div>
+    <div class="win-header-panel">
+      <div class="app-icon">📊</div>
+      <div>
+        <div class="app-title">Informes</div>
+        <div class="app-subtitle">Estado actual del catálogo y préstamos</div>
+      </div>
+    </div>
+
+    <div style="padding:10px;">
+      <div class="summary-grid">
+        <div class="summary-box green">
+          <div class="sv">11</div>
+          <div class="sl">Ejemplares disponibles</div>
+        </div>
+        <div class="summary-box orange">
+          <div class="sv">3</div>
+          <div class="sl">Préstamos activos</div>
+        </div>
+        <div class="summary-box red">
+          <div class="sv">1</div>
+          <div class="sl">Préstamos vencidos</div>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <div>
+          <label>Filtrar por categoría:</label>
+          <select class="field-select" style="width:160px;">
+            <option>— Todas —</option>
+            <option>Literatura</option>
+            <option>Clásicos</option>
+            <option>Tecnología</option>
+          </select>
+        </div>
+        <div>
+          <label>Estado:</label>
+          <select class="field-select" style="width:130px;">
+            <option>Todos</option>
+            <option>Disponibles</option>
+            <option>Agotados</option>
+          </select>
+        </div>
+        <button class="win-btn primary">🔍 Filtrar</button>
+        <button class="win-btn">↺ Ver todo</button>
+      </div>
+
+      <div class="group-box" style="height:auto; margin-bottom:10px;">
+        <span class="group-box-label">Disponibilidad por Libro</span>
+        <table class="datagridview">
+          <thead>
+            <tr>
+              <th style="width:65px;">ISBN</th>
+              <th>Título</th>
+              <th>Categoría</th>
+              <th style="width:55px;">Total</th>
+              <th style="width:65px;">Prestados</th>
+              <th style="width:75px; background:#eafaf1;">Disponibles</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>978-1</td><td>Cien años de soledad</td><td>Literatura</td>
+              <td style="text-align:right;">3</td><td style="text-align:right;">1</td>
+              <td style="text-align:right; font-weight:bold; color:var(--green); background:#f0fbf4;">2</td>
+            </tr>
+            <tr>
+              <td>978-2</td><td>El Quijote</td><td>Clásicos</td>
+              <td style="text-align:right;">2</td><td style="text-align:right;">1</td>
+              <td style="text-align:right; font-weight:bold; color:var(--orange); background:#fffbf0;">1</td>
+            </tr>
+            <tr>
+              <td>978-3</td><td>El Principito</td><td>Literatura</td>
+              <td style="text-align:right;">4</td><td style="text-align:right;">0</td>
+              <td style="text-align:right; font-weight:bold; color:var(--green); background:#f0fbf4;">4</td>
+            </tr>
+            <tr>
+              <td>978-4</td><td>1984</td><td>Clásicos</td>
+              <td style="text-align:right;">2</td><td style="text-align:right;">2</td>
+              <td style="text-align:right; font-weight:bold; color:var(--red); background:#fff0f0;">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="group-box" style="height:auto;">
+        <span class="group-box-label">Préstamos Vencidos ⚠️</span>
+        <table class="datagridview">
+          <thead>
+            <tr>
+              <th style="width:35px;">ID</th>
+              <th>Libro</th>
+              <th>Estudiante</th>
+              <th style="width:80px;">F. Préstamo</th>
+              <th style="width:80px;">F. Esperada</th>
+              <th style="width:70px;">Días mora</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#fff0f0;">
+              <td>001</td><td>1984</td><td>Ana Gómez</td>
+              <td>05/04/2026</td><td class="red">12/04/2026</td>
+              <td class="red" style="text-align:right; font-weight:bold;">7 días</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="win-statusstrip">
+      <span class="status-item">✔ Datos actualizados</span>
+      <span class="status-item">4 títulos</span>
+      <span class="status-item red">1 vencido</span>
+      <span class="status-item spring">libros.csv + prestamos.csv + devoluciones.csv</span>
+    </div>
+  </div>
+
+  <p style="font-size:12px; color:#666; text-align:center; margin-top:10px;">
+    Días de mora: <code>(DateTime.Now - DateTime.Parse(fechaEsperada)).Days</code><br>
+    Disponibles = Total − préstamos sin devolución registrada en <code>devoluciones.csv</code>
+  </p>
+</div>
+
+</body>
+</html>
