@@ -1,4 +1,5 @@
-﻿using System;
+﻿using login.views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,14 @@ namespace login
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            var loginForm = new LoginForm();
+            loginForm.ShowDialog();
+
+            if(loginForm.DialogResult == DialogResult.OK)
+            {
+                Application.Run(new PrincipalForm());
+            }
         }
     }
 }
