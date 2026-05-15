@@ -35,7 +35,6 @@
             this.txtContrasena = new System.Windows.Forms.TextBox();
             this.btnIniciar = new System.Windows.Forms.Button();
             this.btnRegistrarse = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -104,22 +103,10 @@
             this.btnRegistrarse.UseVisualStyleBackColor = true;
             this.btnRegistrarse.Click += new System.EventHandler(this.btnRegistrarse_Click);
             // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(95, 434);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(198, 47);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "Usuarios";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // Form1
+            // LoginForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(392, 524);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnRegistrarse);
             this.Controls.Add(this.btnIniciar);
             this.Controls.Add(this.label3);
@@ -128,7 +115,7 @@
             this.Controls.Add(this.txtUsuario);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "LoginForm";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
@@ -145,7 +132,6 @@
         private System.Windows.Forms.TextBox txtContrasena;
         private System.Windows.Forms.Button btnIniciar;
         private System.Windows.Forms.Button btnRegistrarse;
-        private System.Windows.Forms.Button button1;
     }
 }
 

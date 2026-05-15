@@ -61,23 +61,25 @@ namespace login.controllers
             return "Usuario creado exitosamente.";
         }
 
-        public Dictionary<string, string> ObtenerUsuario(string usuario)
+        public string CambiarContrasena(string usuario, string contrasenaNueva)
         {
-            UsuariosModel usuarios = new UsuariosModel();
-
-            UsuariosModel usuarioObtenido = usuarios.ObtenerPorUsuario(usuario);
-
-            if (usuarioObtenido == null)
+            if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(contrasenaNueva))
             {
-                return null;
+                return "Por favor, complete todos los campos.";
             }
 
-            Dictionary<string, string> resultado = new Dictionary<string, string>();
+            UsuariosModel usuarioModel = new UsuariosModel();
+            var usuarioEncontrado = usuarioModel.ObtenerPorUsuario(usuario);
 
-            resultado["usuario"] = usuarioObtenido.Usuario;
-            resultado["rol"] = usuarioObtenido.Rol;
+            if (usuarioEncontrado == null)
+            {
+                return "Usuario no encontrado.";
+            }
 
-            return resultado;
+            usuarioEncontrado.Password = BCrypt.Net.BCrypt.HashPassword(contrasenaNueva);
+            usuarioModel.Actualizar(usuarioEncontrado);
+
+            return "Contraseña actualizada exitosamente.";
         }
     }
 }

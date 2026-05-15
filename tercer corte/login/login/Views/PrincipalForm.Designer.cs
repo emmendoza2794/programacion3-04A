@@ -36,8 +36,8 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
-            this.txtBienvenida = new System.Windows.Forms.Label();
             this.txtRol = new System.Windows.Forms.Label();
+            this.txtBienvenida = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -127,18 +127,9 @@
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(180, 63);
             this.button6.TabIndex = 5;
-            this.button6.Text = "button6";
+            this.button6.Text = "Usuarios";
             this.button6.UseVisualStyleBackColor = true;
-            // 
-            // txtBienvenida
-            // 
-            this.txtBienvenida.AutoSize = true;
-            this.txtBienvenida.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBienvenida.Location = new System.Drawing.Point(17, 13);
-            this.txtBienvenida.Name = "txtBienvenida";
-            this.txtBienvenida.Size = new System.Drawing.Size(144, 29);
-            this.txtBienvenida.TabIndex = 0;
-            this.txtBienvenida.Text = "Bienvenido";
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // txtRol
             // 
@@ -149,6 +140,16 @@
             this.txtRol.Size = new System.Drawing.Size(54, 20);
             this.txtRol.TabIndex = 1;
             this.txtRol.Text = "admin";
+            // 
+            // txtBienvenida
+            // 
+            this.txtBienvenida.AutoSize = true;
+            this.txtBienvenida.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBienvenida.Location = new System.Drawing.Point(17, 13);
+            this.txtBienvenida.Name = "txtBienvenida";
+            this.txtBienvenida.Size = new System.Drawing.Size(144, 29);
+            this.txtBienvenida.TabIndex = 0;
+            this.txtBienvenida.Text = "Bienvenido";
             // 
             // PrincipalForm
             // 

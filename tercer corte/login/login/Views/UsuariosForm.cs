@@ -1,4 +1,5 @@
-﻿using System;
+﻿using login.controllers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +13,7 @@ namespace login
 {
     public partial class UsuariosForm : Form
     {
+        private UsuariosController usuariosController = new UsuariosController();
         public UsuariosForm()
         {
             InitializeComponent();
@@ -27,45 +29,9 @@ namespace login
             String buscarUsuario = txtBuscarUsuario.Text;
             String contrasenaNueva = txtContrasenaNueva.Text;
 
-            if (string.IsNullOrEmpty(buscarUsuario) || string.IsNullOrEmpty(contrasenaNueva))
-            {
-                MessageBox.Show("Por favor, complete todos los campos.");
-                return;
-            }
+            string resultado = usuariosController.CambiarContrasena(buscarUsuario, contrasenaNueva);
+            MessageBox.Show(resultado);
 
-            String ruta = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "db", "usuarios.csv");
-
-            if (System.IO.File.Exists(ruta))
-            {
-                var lineas = System.IO.File.ReadAllLines(ruta);
-                bool usuarioEncontrado = false;
-                for (int i = 0; i < lineas.Length; i++)
-                {
-                    var datos = lineas[i].Split(',');
-                    if (datos.Length == 2 && datos[0] == buscarUsuario)
-                    {
-                        // Hash de la nueva contraseña
-                        string hashNueva = BCrypt.Net.BCrypt.HashPassword(contrasenaNueva);
-                        lineas[i] = $"{buscarUsuario},{hashNueva}";
-                        usuarioEncontrado = true;
-                        break;
-                    }
-                }
-
-                if (usuarioEncontrado)
-                {
-                    System.IO.File.WriteAllLines(ruta, lineas);
-                    MessageBox.Show("Contraseña actualizada exitosamente.");
-                }
-                else
-                {
-                    MessageBox.Show("Usuario no encontrado.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("No se encontró la base de datos de usuarios.");
-            }
         }
     }
 }
