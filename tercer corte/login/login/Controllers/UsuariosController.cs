@@ -1,4 +1,5 @@
 ﻿using login.models;
+using login.Respository;
 using login.Services;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace login.controllers
 {
     internal class UsuariosController
     {
+        private UsuariosRepository usuariosRepository = new UsuariosRepository();
         public string IniciarSesion(string usuario, string contrasena)
         {
             if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(contrasena))
@@ -17,9 +19,7 @@ namespace login.controllers
                 return "Por favor, complete todos los campos.";
             }
 
-            UsuariosModel usuarios = new UsuariosModel();
-
-            var usuarioEncontrado = usuarios.ObtenerPorUsuario(usuario);
+            var usuarioEncontrado = usuariosRepository.ObtenerPorUsuario(usuario);
 
             if (usuarioEncontrado == null)
             {
@@ -44,19 +44,15 @@ namespace login.controllers
                 return "Por favor, complete todos los campos.";
             }
 
-            UsuariosModel usuarioNuevo = new UsuariosModel();
-
-            var usuarioExistente = usuarioNuevo.ObtenerPorUsuario(usuario);
+            var usuarioExistente = usuariosRepository.ObtenerPorUsuario(usuario);
             if (usuarioExistente != null)
             {
                 return "El usuario ya existe.";
             }
 
-            usuarioNuevo.Usuario = usuario;
-            usuarioNuevo.Password = BCrypt.Net.BCrypt.HashPassword(contrasena);
-            usuarioNuevo.Rol = rol;
+            UsuariosModel usuarioNuevo = new UsuariosModel(usuario, BCrypt.Net.BCrypt.HashPassword(contrasena), rol);
 
-            usuarioNuevo.Crear(usuarioNuevo);
+            usuariosRepository.Crear(usuarioNuevo);
 
             return "Usuario creado exitosamente.";
         }
@@ -68,8 +64,7 @@ namespace login.controllers
                 return "Por favor, complete todos los campos.";
             }
 
-            UsuariosModel usuarioModel = new UsuariosModel();
-            var usuarioEncontrado = usuarioModel.ObtenerPorUsuario(usuario);
+            var usuarioEncontrado = usuariosRepository.ObtenerPorUsuario(usuario);
 
             if (usuarioEncontrado == null)
             {
@@ -77,7 +72,7 @@ namespace login.controllers
             }
 
             usuarioEncontrado.Password = BCrypt.Net.BCrypt.HashPassword(contrasenaNueva);
-            usuarioModel.Actualizar(usuarioEncontrado);
+            usuariosRepository.Actualizar(usuarioEncontrado);
 
             return "Contraseña actualizada exitosamente.";
         }

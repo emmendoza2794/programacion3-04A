@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Models\UsuariosModel.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
+    <Compile Include="Respository\UsuariosRepository.cs" />
     <Compile Include="Services\SessionService.cs" />
     <Compile Include="Views\LoginForm.cs">
       <SubType>Form</SubType>
