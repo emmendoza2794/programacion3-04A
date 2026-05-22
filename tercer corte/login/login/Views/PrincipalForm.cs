@@ -20,6 +20,7 @@ namespace login.views
             {
                 button5.Visible = false;
                 button6.Visible = false;
+                button7.Visible = false;
             }
         }
 
@@ -33,6 +34,12 @@ namespace login.views
         {
             var formUsuarios = new UsuariosForm();
             formUsuarios.ShowDialog();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            var formProductos = new ProductosForm();
+            formProductos.ShowDialog();
         }
     }
 }

@@ -65,10 +65,13 @@
     <Compile Include="Models\PersonaModel.cs" />
     <Compile Include="Models\UsuariosModel.cs" />
     <Compile Include="Models\ClienteModel.cs" />
+    <Compile Include="Models\ProductoModel.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Controllers\ClienteController.cs" />
+    <Compile Include="Controllers\ProductoController.cs" />
     <Compile Include="Respository\UsuariosRepository.cs" />
     <Compile Include="Respository\ClienteRepository.cs" />
+    <Compile Include="Respository\ProductoRepository.cs" />
     <Compile Include="Services\SessionService.cs" />
     <Compile Include="Views\LoginForm.cs">
       <SubType>Form</SubType>
@@ -102,6 +105,12 @@
     <Compile Include="Views\ClientesForm.Designer.cs">
       <DependentUpon>ClientesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProductosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ProductosForm.Designer.cs">
+      <DependentUpon>ProductosForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Views\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -125,6 +134,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ClientesForm.resx">
       <DependentUpon>ClientesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ProductosForm.resx">
+      <DependentUpon>ProductosForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
