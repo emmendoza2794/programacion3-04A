@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace login.models
 {
-    internal class UsuariosModel
+    internal class UsuariosModel : PersonaModel
     {
-        public String Usuario { get; set; }
-        public String Password { get; set; }
-        public String Rol { get; set; }
+        public string Usuario { get; set; }
+        public string Password { get; set; }
+        public string Rol { get; set; }
 
-        public UsuariosModel(String usuario, String password, String rol)
+        public UsuariosModel(string nombre, string apellido, string cedula, string email, string telefono, string usuario, string password, string rol)
+            : base(nombre, apellido, cedula, email, telefono)
         {
             Usuario = usuario;
             Password = password;

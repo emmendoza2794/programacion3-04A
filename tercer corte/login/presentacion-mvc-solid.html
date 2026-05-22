@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVC Extendida + Principios SOLID</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f172a;
+    color: #f1f5f9;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #presentation {
+    width: 100%;
+    height: calc(100vh - 56px);
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 48px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity .35s ease, transform .35s ease;
+    pointer-events: none;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+  .slide.exit {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* ── nav bar ── */
+  #nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 56px;
+    background: #1e293b;
+    border-top: 1px solid #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+  #nav button {
+    background: #3b82f6;
+    border: none;
+    color: #fff;
+    width: 40px; height: 36px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  #nav button:hover { background: #2563eb; }
+  #nav button:disabled { background: #334155; cursor: default; }
+  #counter { color: #94a3b8; font-size: 14px; min-width: 70px; text-align: center; }
+
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: #3b82f6;
+    transition: width .35s ease;
+  }
+
+  /* ── typography ── */
+  .tag {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .tag-blue   { background: #1d4ed8; color: #bfdbfe; }
+  .tag-green  { background: #065f46; color: #6ee7b7; }
+  .tag-amber  { background: #92400e; color: #fde68a; }
+  .tag-purple { background: #4c1d95; color: #ddd6fe; }
+  .tag-red    { background: #7f1d1d; color: #fecaca; }
+
+  h1 { font-size: 48px; font-weight: 800; line-height: 1.15; }
+  h2 { font-size: 34px; font-weight: 700; margin-bottom: 28px; }
+  h3 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
+  p  { font-size: 17px; line-height: 1.7; color: #cbd5e1; }
+
+  .subtitle {
+    font-size: 20px;
+    color: #94a3b8;
+    margin-top: 12px;
+  }
+
+  /* ── layout helpers ── */
+  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .card-accent-blue   { border-left: 4px solid #3b82f6; }
+  .card-accent-green  { border-left: 4px solid #10b981; }
+  .card-accent-amber  { border-left: 4px solid #f59e0b; }
+  .card-accent-purple { border-left: 4px solid #a855f7; }
+  .card-accent-red    { border-left: 4px solid #ef4444; }
+
+  ul.clean { list-style: none; }
+  ul.clean li {
+    padding: 6px 0;
+    padding-left: 20px;
+    color: #cbd5e1;
+    font-size: 16px;
+    position: relative;
+  }
+  ul.clean li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #3b82f6;
+  }
+
+  /* ── code ── */
+  pre {
+    background: #020617;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Cascadia Code', monospace;
+  }
+  .kw { color: #7dd3fc; }
+  .type { color: #86efac; }
+  .str { color: #fca5a5; }
+  .cmt { color: #475569; font-style: italic; }
+  .fn { color: #fde68a; }
+  .ns { color: #c4b5fd; }
+
+  /* ── flow diagram ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 16px 0;
+  }
+  .flow-box {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 12px 20px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    min-width: 120px;
+  }
+  .flow-arrow {
+    font-size: 22px;
+    color: #475569;
+    margin: 0 4px;
+  }
+  .fb-blue   { border-color: #3b82f6; color: #93c5fd; }
+  .fb-green  { border-color: #10b981; color: #6ee7b7; }
+  .fb-amber  { border-color: #f59e0b; color: #fde68a; }
+  .fb-purple { border-color: #a855f7; color: #ddd6fe; }
+  .fb-red    { border-color: #ef4444; color: #fca5a5; }
+
+  /* ── big letter SOLID ── */
+  .solid-letter {
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  /* ── table ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  th {
+    background: #1e293b;
+    color: #94a3b8;
+    text-align: left;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #1e293b;
+    color: #cbd5e1;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #1e293b55; }
+
+  /* ── folder tree ── */
+  .tree {
+    font-family: 'Consolas', monospace;
+    font-size: 15px;
+    line-height: 2;
+    color: #94a3b8;
+  }
+  .tree .folder { color: #fde68a; font-weight: 700; }
+  .tree .file   { color: #cbd5e1; }
+  .tree .note   { color: #475569; font-style: italic; font-size: 13px; }
+
+  /* ── cover slide ── */
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 60% 40%, #1d4ed820 0%, transparent 70%),
+                radial-gradient(ellipse at 20% 80%, #7c3aed15 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cover-content { position: relative; z-index: 1; }
+
+  /* ── badges ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #cbd5e1;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-blue   { background: #3b82f6; }
+  .dot-green  { background: #10b981; }
+  .dot-amber  { background: #f59e0b; }
+  .dot-purple { background: #a855f7; }
+  .dot-red    { background: #ef4444; }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div id="presentation">
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 1  Portada
+  ══════════════════════════════════════════ -->
+  <div class="slide active" id="s1">
+    <div class="cover-bg"></div>
+    <div class="cover-content">
+      <div class="tag tag-blue">Programación III</div>
+      <h1>MVC Extendida<br><span style="color:#3b82f6">+ Principios SOLID</span></h1>
+      <p class="subtitle">Arquitectura limpia aplicada a una aplicación WinForms en C#</p>
+      <div style="display:flex;gap:12px;margin-top:36px;flex-wrap:wrap">
+        <span class="badge"><span class="dot dot-blue"></span>Patrón MVC</span>
+        <span class="badge"><span class="dot dot-green"></span>Repository Layer</span>
+        <span class="badge"><span class="dot dot-amber"></span>Herencia</span>
+        <span class="badge"><span class="dot dot-purple"></span>Principios SOLID</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 2  Agenda
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s2">
+    <div class="tag tag-blue">Contenido</div>
+    <h2>¿Qué vamos a ver?</h2>
+    <div class="cols-2" style="gap:20px">
+      <div>
+        <div class="card card-accent-blue" style="margin-bottom:16px">
+          <h3 style="color:#93c5fd">01 — Patrón MVC</h3>
+          <p style="font-size:14px">Qué es, cómo funciona y por qué lo usamos como base de la arquitectura.</p>
+        </div>
+        <div class="card card-accent-green" style="margin-bottom:16px">
+          <h3 style="color:#6ee7b7">02 — MVC Extendida</h3>
+          <p style="font-size:14px">Cómo ampliamos el patrón clásico con la capa Repository y Services.</p>
+        </div>
+        <div class="card card-accent-amber">
+          <h3 style="color:#fde68a">03 — Estructura del proyecto</h3>
+          <p style="font-size:14px">Responsabilidad de cada carpeta y cómo se comunican las capas.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card card-accent-purple" style="margin-bottom:16px">
+          <h3 style="color:#ddd6fe">04 — Principios SOLID</h3>
+          <p style="font-size:14px">Los 5 principios del diseño orientado a objetos explicados con ejemplos reales.</p>
+        </div>
+        <div class="card card-accent-red">
+          <h3 style="color:#fca5a5">05 — SOLID en nuestro proyecto</h3>
+          <p style="font-size:14px">Dónde y cómo aplicamos cada principio en el código que desarrollamos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 3  ¿Qué es MVC?
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s3">
+    <div class="tag tag-blue">Arquitectura</div>
+    <h2>¿Qué es el patrón MVC?</h2>
+    <p style="margin-bottom:28px">MVC separa una aplicación en tres responsabilidades bien definidas para facilitar el mantenimiento, la escalabilidad y las pruebas.</p>
+    <div class="cols-3">
+      <div class="card card-accent-amber">
+        <div style="font-size:36px;margin-bottom:8px">🗄️</div>
+        <h3 style="color:#fde68a">Model</h3>
+        <p style="font-size:14px">Representa los <strong style="color:#f1f5f9">datos y las reglas de negocio</strong>. No sabe nada de la interfaz ni de cómo se persisten los datos.</p>
+      </div>
+      <div class="card card-accent-blue">
+        <div style="font-size:36px;margin-bottom:8px">🖥️</div>
+        <h3 style="color:#93c5fd">View</h3>
+        <p style="font-size:14px">Es la <strong style="color:#f1f5f9">interfaz de usuario</strong>. Muestra información y captura eventos. No conoce ni modelos ni repositorios.</p>
+      </div>
+      <div class="card card-accent-green">
+        <div style="font-size:36px;margin-bottom:8px">⚙️</div>
+        <h3 style="color:#6ee7b7">Controller</h3>
+        <p style="font-size:14px"><strong style="color:#f1f5f9">Orquesta</strong> la comunicación entre la View y el Model. Contiene la lógica de negocio.</p>
+      </div>
+    </div>
+    <div class="flow" style="margin-top:28px">
+      <div class="flow-box fb-blue">View</div>
+      <div class="flow-arrow">⟷</div>
+      <div class="flow-box fb-green">Controller</div>
+      <div class="flow-arrow">⟷</div>
+      <div class="flow-box fb-amber">Model</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 4  MVC Extendida
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s4">
+    <div class="tag tag-green">Arquitectura extendida</div>
+    <h2>MVC Extendida: capas adicionales</h2>
+    <p style="margin-bottom:24px">El MVC clásico coloca toda la lógica de acceso a datos en el Model. Nosotros lo extendemos separando esa responsabilidad en capas dedicadas.</p>
+    <div class="cols-2">
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <h3 style="color:#f59e0b">➕ Repository Layer</h3>
+          <p style="font-size:14px">Aísla completamente el acceso a datos (CSV, base de datos, API...). El Controller nunca sabe cómo se guardan los datos, solo pide y recibe.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:#a855f7">➕ Services Layer</h3>
+          <p style="font-size:14px">Lógica transversal que no pertenece a una entidad específica. En nuestro caso: <code style="color:#c4b5fd">SessionService</code> gestiona el usuario activo en toda la app.</p>
+        </div>
+      </div>
+      <div>
+        <div style="background:#020617;border:1px solid #1e293b;border-radius:14px;padding:20px">
+          <p style="font-size:13px;color:#475569;margin-bottom:12px;font-family:monospace">Flujo completo de datos</p>
+          <div class="flow" style="flex-direction:column;align-items:flex-start;gap:0">
+            <div class="flow-box fb-blue" style="width:100%;margin-bottom:0">🖥️ View (Form)</div>
+            <div style="color:#3b82f6;padding:4px 20px;font-size:20px">↕</div>
+            <div class="flow-box fb-green" style="width:100%">⚙️ Controller</div>
+            <div style="color:#10b981;padding:4px 20px;font-size:20px">↕</div>
+            <div class="flow-box fb-amber" style="width:100%">🗄️ Repository</div>
+            <div style="color:#f59e0b;padding:4px 20px;font-size:20px">↕</div>
+            <div class="flow-box fb-red" style="width:100%">📁 Archivo CSV</div>
+          </div>
+          <p style="font-size:12px;color:#475569;margin-top:12px;font-family:monospace">Services actúan de forma transversal en todas las capas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 5  Estructura de carpetas
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s5">
+    <div class="tag tag-amber">Estructura</div>
+    <h2>Estructura del proyecto</h2>
+    <div class="cols-2">
+      <div class="card">
+        <div class="tree">
+          <div><span class="folder">📁 login/</span></div>
+          <div>&nbsp;&nbsp;├── <span class="folder">Models/</span> <span class="note">← entidades de datos</span></div>
+          <div>&nbsp;&nbsp;│ &nbsp;&nbsp;&nbsp;├── <span class="file">PersonaModel.cs</span></div>
+          <div>&nbsp;&nbsp;│ &nbsp;&nbsp;&nbsp;├── <span class="file">UsuariosModel.cs</span></div>
+          <div>&nbsp;&nbsp;│ &nbsp;&nbsp;&nbsp;└── <span class="file">ClienteModel.cs</span></div>
+          <div>&nbsp;&nbsp;├── <span class="folder">Controllers/</span> <span class="note">← lógica de negocio</span></div>
+          <div>&nbsp;&nbsp;│ &nbsp;&nbsp;&nbsp;├── <span class="file">UsuariosController.cs</span></div>
+          <div>&nbsp;&nbsp;│ &nbsp;&nbsp;&nbsp;└── <span class="file">ClienteController.cs</span></div>
+          <div>&nbsp;&nbsp;├── <span class="folder">Respository/</span> <span class="note">← acceso a datos</span></div>
+          <div>&nbsp;&nbsp;│ &nbsp;&nbsp;&nbsp;├── <span class="file">UsuariosRepository.cs</span></div>
+          <div>&nbsp;&nbsp;│ &nbsp;&nbsp;&nbsp;└── <span class="file">ClienteRepository.cs</span></div>
+          <div>&nbsp;&nbsp;├── <span class="folder">Services/</span> <span class="note">← lógica transversal</span></div>
+          <div>&nbsp;&nbsp;│ &nbsp;&nbsp;&nbsp;└── <span class="file">SessionService.cs</span></div>
+          <div>&nbsp;&nbsp;└── <span class="folder">Views/</span> <span class="note">← interfaz de usuario</span></div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">LoginForm</span></div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">RegistroForm</span></div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">PrincipalForm</span></div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">UsuariosForm</span></div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">ClientesForm</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card card-accent-amber" style="padding:16px">
+          <strong style="color:#fde68a">Models/</strong>
+          <p style="font-size:13px;margin-top:4px">Solo almacenan datos. Sin lógica, sin acceso a archivos, sin UI.</p>
+        </div>
+        <div class="card card-accent-green" style="padding:16px">
+          <strong style="color:#6ee7b7">Controllers/</strong>
+          <p style="font-size:13px;margin-top:4px">Validan, transforman y coordinan. Devuelven strings o List&lt;string[]&gt; a la View.</p>
+        </div>
+        <div class="card card-accent-blue" style="padding:16px">
+          <strong style="color:#93c5fd">Respository/</strong>
+          <p style="font-size:13px;margin-top:4px">Leen y escriben archivos CSV. Son los únicos que conocen el medio de persistencia.</p>
+        </div>
+        <div class="card card-accent-purple" style="padding:16px">
+          <strong style="color:#ddd6fe">Services/</strong>
+          <p style="font-size:13px;margin-top:4px">Estado compartido entre formularios. SessionService guarda usuario y rol activos.</p>
+        </div>
+        <div class="card card-accent-red" style="padding:16px">
+          <strong style="color:#fca5a5">Views/</strong>
+          <p style="font-size:13px;margin-top:4px">Solo UI. Hablan únicamente con Controllers, nunca con Models ni Repositories.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 6  Regla de comunicación entre capas
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s6">
+    <div class="tag tag-green">Comunicación entre capas</div>
+    <h2>¿Quién puede hablar con quién?</h2>
+    <p style="margin-bottom:28px">Una de las reglas más importantes de esta arquitectura: <strong style="color:#f1f5f9">cada capa solo conoce a la capa inmediatamente inferior</strong>. Nunca se salta capas.</p>
+    <div class="card" style="margin-bottom:24px">
+      <div class="flow" style="flex-wrap:nowrap">
+        <div class="flow-box fb-red" style="text-align:center;min-width:100px">
+          <div style="font-size:11px;color:#475569;margin-bottom:4px">View</div>
+          LoginForm
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box fb-green" style="text-align:center;min-width:130px">
+          <div style="font-size:11px;color:#475569;margin-bottom:4px">Controller</div>
+          UsuariosController
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box fb-blue" style="text-align:center;min-width:140px">
+          <div style="font-size:11px;color:#475569;margin-bottom:4px">Repository</div>
+          UsuariosRepository
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box fb-amber" style="text-align:center;min-width:100px">
+          <div style="font-size:11px;color:#475569;margin-bottom:4px">Persistencia</div>
+          usuarios.csv
+        </div>
+      </div>
+    </div>
+    <div class="cols-2" style="gap:20px">
+      <div class="card" style="border-color:#10b981">
+        <h3 style="color:#6ee7b7">✅ Lo que SÍ hacemos</h3>
+        <ul class="clean" style="margin-top:8px">
+          <li>View llama a métodos del Controller</li>
+          <li>Controller usa el Repository internamente</li>
+          <li>Controller devuelve <code style="color:#fde68a">string</code> o <code style="color:#fde68a">List&lt;string[]&gt;</code> a la View</li>
+          <li>Repository trabaja con Models para leer/escribir</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:#ef4444">
+        <h3 style="color:#fca5a5">❌ Lo que NO hacemos</h3>
+        <ul class="clean" style="margin-top:8px">
+          <li>View importando <code style="color:#fca5a5">login.models</code></li>
+          <li>View llamando directamente al Repository</li>
+          <li>View recibiendo objetos Model (ClienteModel, etc.)</li>
+          <li>Repository usando clases de la View</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 7  Herencia en los modelos
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s7">
+    <div class="tag tag-amber">Models — Herencia</div>
+    <h2>Jerarquía de modelos con herencia</h2>
+    <div class="cols-2" style="align-items:start">
+      <div>
+        <p style="margin-bottom:20px">Los modelos comparten campos comunes a través de una clase base, evitando duplicación de código.</p>
+        <div style="background:#020617;border:1px solid #1e293b;border-radius:12px;padding:20px;font-family:monospace;font-size:13px">
+          <div style="text-align:center;padding:10px;border:2px solid #f59e0b;border-radius:8px;color:#fde68a;margin-bottom:8px">
+            <strong>PersonaModel</strong><br>
+            <span style="font-size:11px;color:#94a3b8">Nombre · Apellido · Cedula · Email · Telefono</span>
+          </div>
+          <div style="text-align:center;color:#475569;font-size:18px;margin-bottom:8px">△ △</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="padding:10px;border:2px solid #3b82f6;border-radius:8px;color:#93c5fd;text-align:center">
+              <strong>UsuariosModel</strong><br>
+              <span style="font-size:11px;color:#94a3b8">Usuario · Password · Rol</span>
+            </div>
+            <div style="padding:10px;border:2px solid #10b981;border-radius:8px;color:#6ee7b7;text-align:center">
+              <strong>ClienteModel</strong><br>
+              <span style="font-size:11px;color:#94a3b8">NumeroCliente · FechaRegistro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <pre><span class="cmt">// Clase base — solo datos de persona</span>
+<span class="kw">class</span> <span class="type">PersonaModel</span>
+{
+    <span class="kw">public string</span> Nombre   { <span class="kw">get; set;</span> }
+    <span class="kw">public string</span> Apellido { <span class="kw">get; set;</span> }
+    <span class="kw">public string</span> Cedula   { <span class="kw">get; set;</span> }
+    <span class="kw">public string</span> Email    { <span class="kw">get; set;</span> }
+    <span class="kw">public string</span> Telefono { <span class="kw">get; set;</span> }
+}
+
+<span class="cmt">// Extiende PersonaModel sin modificarla</span>
+<span class="kw">class</span> <span class="type">UsuariosModel</span> : <span class="type">PersonaModel</span>
+{
+    <span class="kw">public string</span> Usuario  { <span class="kw">get; set;</span> }
+    <span class="kw">public string</span> Password { <span class="kw">get; set;</span> }
+    <span class="kw">public string</span> Rol      { <span class="kw">get; set;</span> }
+}
+
+<span class="kw">class</span> <span class="type">ClienteModel</span> : <span class="type">PersonaModel</span>
+{
+    <span class="kw">public string</span>   NumeroCliente { <span class="kw">get; set;</span> }
+    <span class="kw">public</span> <span class="type">DateTime</span> FechaRegistro { <span class="kw">get; set;</span> }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 8  SOLID Intro
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s8">
+    <div class="tag tag-purple">Diseño orientado a objetos</div>
+    <h2>Principios SOLID</h2>
+    <p style="margin-bottom:32px">SOLID es un conjunto de 5 principios formulados por Robert C. Martin que guían el diseño de software orientado a objetos robusto, mantenible y escalable.</p>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px">
+      <div class="card" style="text-align:center;border-color:#3b82f6">
+        <div class="solid-letter" style="color:#3b82f6">S</div>
+        <p style="font-size:13px;color:#93c5fd;font-weight:600">Single Responsibility</p>
+        <p style="font-size:12px;margin-top:6px">Una clase, una razón para cambiar</p>
+      </div>
+      <div class="card" style="text-align:center;border-color:#10b981">
+        <div class="solid-letter" style="color:#10b981">O</div>
+        <p style="font-size:13px;color:#6ee7b7;font-weight:600">Open / Closed</p>
+        <p style="font-size:12px;margin-top:6px">Abierto para extender, cerrado para modificar</p>
+      </div>
+      <div class="card" style="text-align:center;border-color:#f59e0b">
+        <div class="solid-letter" style="color:#f59e0b">L</div>
+        <p style="font-size:13px;color:#fde68a;font-weight:600">Liskov Substitution</p>
+        <p style="font-size:12px;margin-top:6px">Las subclases no rompen el contrato base</p>
+      </div>
+      <div class="card" style="text-align:center;border-color:#a855f7">
+        <div class="solid-letter" style="color:#a855f7">I</div>
+        <p style="font-size:13px;color:#ddd6fe;font-weight:600">Interface Segregation</p>
+        <p style="font-size:12px;margin-top:6px">Interfaces pequeñas y específicas</p>
+      </div>
+      <div class="card" style="text-align:center;border-color:#ef4444">
+        <div class="solid-letter" style="color:#ef4444">D</div>
+        <p style="font-size:13px;color:#fca5a5;font-weight:600">Dependency Inversion</p>
+        <p style="font-size:12px;margin-top:6px">Depender de abstracciones, no de implementaciones</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 9  S — Single Responsibility
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s9">
+    <div class="tag tag-blue">SOLID</div>
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px">
+      <div class="solid-letter" style="color:#3b82f6">S</div>
+      <div>
+        <h2 style="margin-bottom:4px">Single Responsibility Principle</h2>
+        <p style="color:#3b82f6;font-style:italic">"Una clase debe tener una sola razón para cambiar."</p>
+      </div>
+    </div>
+    <div class="cols-2">
+      <div>
+        <p style="margin-bottom:16px">Si una clase hace demasiadas cosas, un cambio en una responsabilidad puede romper las otras. La solución es separar cada responsabilidad en su propia clase.</p>
+        <div class="card card-accent-blue">
+          <h3 style="color:#93c5fd;font-size:15px">En nuestro proyecto:</h3>
+          <ul class="clean" style="margin-top:8px">
+            <li><code style="color:#fde68a">PersonaModel</code> — solo almacena datos de persona</li>
+            <li><code style="color:#fde68a">UsuariosRepository</code> — solo lee/escribe el CSV de usuarios</li>
+            <li><code style="color:#fde68a">ClienteController</code> — solo orquesta la lógica de clientes</li>
+            <li><code style="color:#fde68a">SessionService</code> — solo gestiona la sesión activa</li>
+            <li><code style="color:#fde68a">LoginForm</code> — solo maneja el formulario de inicio de sesión</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <pre><span class="cmt">// ✅ Bien: cada clase tiene una sola responsabilidad</span>
+
+<span class="cmt">// Solo guarda/lee CSV de usuarios</span>
+<span class="kw">class</span> <span class="type">UsuariosRepository</span>
+{
+    <span class="kw">public void</span> <span class="fn">Crear</span>(<span class="type">UsuariosModel</span> u) { ... }
+    <span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">UsuariosModel</span>&gt; <span class="fn">ObtenerTodos</span>() { ... }
+    <span class="kw">public void</span> <span class="fn">Actualizar</span>(<span class="type">UsuariosModel</span> u) { ... }
+    <span class="kw">public void</span> <span class="fn">Eliminar</span>(<span class="kw">string</span> usuario) { ... }
+}
+
+<span class="cmt">// Solo gestiona la sesión activa</span>
+<span class="kw">static class</span> <span class="type">SessionService</span>
+{
+    <span class="kw">public static string</span> Usuario { <span class="kw">get; private set;</span> }
+    <span class="kw">public static string</span> Rol     { <span class="kw">get; private set;</span> }
+    <span class="kw">public static void</span> <span class="fn">Session</span>(<span class="kw">string</span> u, <span class="kw">string</span> r)
+    { Usuario = u; Rol = r; }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 10  O — Open/Closed
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s10">
+    <div class="tag tag-green">SOLID</div>
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px">
+      <div class="solid-letter" style="color:#10b981">O</div>
+      <div>
+        <h2 style="margin-bottom:4px">Open / Closed Principle</h2>
+        <p style="color:#10b981;font-style:italic">"El código debe estar abierto para extensión, pero cerrado para modificación."</p>
+      </div>
+    </div>
+    <div class="cols-2">
+      <div>
+        <p style="margin-bottom:16px">Cuando necesitamos nueva funcionalidad, debemos poder <strong style="color:#f1f5f9">agregar código nuevo</strong> sin modificar el código que ya existe y funciona.</p>
+        <div class="card card-accent-green">
+          <h3 style="color:#6ee7b7;font-size:15px">En nuestro proyecto:</h3>
+          <ul class="clean" style="margin-top:8px">
+            <li><code style="color:#fde68a">PersonaModel</code> nunca fue modificada al agregar usuarios o clientes</li>
+            <li>Se crearon <code style="color:#fde68a">UsuariosModel</code> y <code style="color:#fde68a">ClienteModel</code> extendiéndola</li>
+            <li>Si mañana se agrega <code style="color:#fde68a">EmpleadoModel</code>, PersonaModel sigue intacta</li>
+            <li>El sistema de CSV puede cambiarse a una base de datos sin tocar los Controllers</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <pre><span class="cmt">// PersonaModel: CERRADA para modificación</span>
+<span class="kw">class</span> <span class="type">PersonaModel</span>
+{
+    <span class="kw">public string</span> Nombre   { <span class="kw">get; set;</span> }
+    <span class="kw">public string</span> Apellido { <span class="kw">get; set;</span> }
+    <span class="cmt">// ... nunca hay que cambiar esto</span>
+}
+
+<span class="cmt">// UsuariosModel: ABIERTA para extensión</span>
+<span class="kw">class</span> <span class="type">UsuariosModel</span> : <span class="type">PersonaModel</span>
+{
+    <span class="kw">public string</span> Usuario  { <span class="kw">get; set;</span> }
+    <span class="kw">public string</span> Password { <span class="kw">get; set;</span> }
+    <span class="kw">public string</span> Rol      { <span class="kw">get; set;</span> }
+}
+
+<span class="cmt">// EmpleadoModel: también extiende sin tocar la base</span>
+<span class="kw">class</span> <span class="type">EmpleadoModel</span> : <span class="type">PersonaModel</span>
+{
+    <span class="kw">public string</span> Cargo   { <span class="kw">get; set;</span> }
+    <span class="kw">public decimal</span> Salario { <span class="kw">get; set;</span> }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 11  L — Liskov
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s11">
+    <div class="tag tag-amber">SOLID</div>
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px">
+      <div class="solid-letter" style="color:#f59e0b">L</div>
+      <div>
+        <h2 style="margin-bottom:4px">Liskov Substitution Principle</h2>
+        <p style="color:#f59e0b;font-style:italic">"Los objetos de una subclase deben poder reemplazar a los de la clase base sin romper el programa."</p>
+      </div>
+    </div>
+    <div class="cols-2">
+      <div>
+        <p style="margin-bottom:16px">Una subclase debe cumplir el <strong style="color:#f1f5f9">contrato</strong> de su clase padre. No debe cambiar comportamientos ni lanzar excepciones inesperadas.</p>
+        <div class="card card-accent-amber">
+          <h3 style="color:#fde68a;font-size:15px">En nuestro proyecto:</h3>
+          <ul class="clean" style="margin-top:8px">
+            <li><code style="color:#fde68a">UsuariosModel</code> y <code style="color:#fde68a">ClienteModel</code> extienden <code style="color:#fde68a">PersonaModel</code> respetando su contrato</li>
+            <li>Ambas son construibles con los mismos datos base (nombre, apellido, cédula, email, teléfono)</li>
+            <li>Cualquier código que use <code style="color:#fde68a">PersonaModel</code> funciona igual con sus subclases</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <pre><span class="cmt">// El contrato de PersonaModel:</span>
+<span class="cmt">// constructor acepta los 5 campos básicos</span>
+<span class="kw">class</span> <span class="type">PersonaModel</span>
+{
+    <span class="kw">public</span> <span class="fn">PersonaModel</span>(
+        <span class="kw">string</span> nombre, <span class="kw">string</span> apellido,
+        <span class="kw">string</span> cedula,  <span class="kw">string</span> email,
+        <span class="kw">string</span> telefono) { ... }
+}
+
+<span class="cmt">// UsuariosModel respeta el contrato base:</span>
+<span class="kw">class</span> <span class="type">UsuariosModel</span> : <span class="type">PersonaModel</span>
+{
+    <span class="kw">public</span> <span class="fn">UsuariosModel</span>(
+        <span class="kw">string</span> nombre, <span class="kw">string</span> apellido,
+        <span class="kw">string</span> cedula,  <span class="kw">string</span> email,
+        <span class="kw">string</span> telefono, <span class="cmt">// ← base</span>
+        <span class="kw">string</span> usuario, <span class="kw">string</span> password,
+        <span class="kw">string</span> rol)
+        : <span class="fn">base</span>(nombre, apellido, cedula, email, telefono)
+    { ... }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 12  I — Interface Segregation
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s12">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px">
+      <div class="tag tag-purple" style="margin-bottom:0">SOLID</div>
+      <div class="tag" style="background:#4c1d9555;color:#f0abfc;border:1px solid #a855f755;margin-bottom:0">⚠️ Cumplimiento parcial</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:16px">
+      <div class="solid-letter" style="color:#a855f7">I</div>
+      <div>
+        <h2 style="margin-bottom:4px">Interface Segregation Principle</h2>
+        <p style="color:#a855f7;font-style:italic">"Ningún cliente debería ser forzado a depender de métodos que no usa."</p>
+      </div>
+    </div>
+    <div class="cols-2">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="border-color:#10b981">
+          <h3 style="color:#6ee7b7;font-size:14px">✅ Lo que sí cumplimos</h3>
+          <ul class="clean" style="margin-top:6px">
+            <li>La View recibe <code style="color:#fde68a">List&lt;string[]&gt;</code>, no modelos completos</li>
+            <li>Cada Controller expone solo los métodos que su View necesita</li>
+            <li><code style="color:#fde68a">ClienteController</code> y <code style="color:#fde68a">UsuariosController</code> son independientes</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color:#ef4444">
+          <h3 style="color:#fca5a5;font-size:14px">❌ Lo que nos falta</h3>
+          <ul class="clean" style="margin-top:6px">
+            <li>No existen interfaces <code style="color:#fca5a5">IUsuariosRepository</code> ni <code style="color:#fca5a5">IClienteRepository</code></li>
+            <li>Los Controllers conocen la clase concreta del Repository, no un contrato</li>
+            <li>Sin interfaces no se pueden segregar ni intercambiar implementaciones</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color:#f59e0b;padding:12px 16px">
+          <p style="font-size:13px;color:#fde68a">💡 La solución sería crear una carpeta <code>Interfaces/</code> con <code>IUsuariosRepository</code> e <code>IClienteRepository</code>, y que los repositorios las implementen.</p>
+        </div>
+      </div>
+      <div>
+        <pre><span class="cmt">// ❌ Lo que tenemos: el Controller conoce</span>
+<span class="cmt">// la clase concreta directamente</span>
+<span class="kw">class</span> <span class="type">ClienteController</span>
+{
+    <span class="kw">private</span> <span class="type">ClienteRepository</span> repo
+        = <span class="kw">new</span> <span class="type">ClienteRepository</span>();
+}
+
+<span class="cmt">// ✅ Lo que debería ser: depender de</span>
+<span class="cmt">// una interfaz, no de la implementación</span>
+<span class="kw">interface</span> <span class="type">IClienteRepository</span>
+{
+    <span class="kw">void</span> <span class="fn">Crear</span>(<span class="type">ClienteModel</span> c);
+    <span class="type">List</span>&lt;<span class="type">ClienteModel</span>&gt; <span class="fn">ObtenerTodos</span>();
+    <span class="kw">void</span> <span class="fn">Actualizar</span>(<span class="type">ClienteModel</span> c);
+    <span class="kw">void</span> <span class="fn">Eliminar</span>(<span class="kw">string</span> id);
+}
+
+<span class="cmt">// Y ClienteRepository implementaría esa interfaz</span>
+<span class="kw">class</span> <span class="type">ClienteRepository</span> : <span class="type">IClienteRepository</span>
+{ ... }</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 13  D — Dependency Inversion
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s13">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px">
+      <div class="tag tag-red" style="margin-bottom:0">SOLID</div>
+      <div class="tag" style="background:#7f1d1d55;color:#fca5a5;border:1px solid #ef444455;margin-bottom:0">⚠️ Cumplimiento parcial</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:16px">
+      <div class="solid-letter" style="color:#ef4444">D</div>
+      <div>
+        <h2 style="margin-bottom:4px">Dependency Inversion Principle</h2>
+        <p style="color:#ef4444;font-style:italic">"Los módulos de alto nivel no deben depender de los de bajo nivel. Ambos deben depender de abstracciones."</p>
+      </div>
+    </div>
+    <div class="cols-2">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="border-color:#10b981">
+          <h3 style="color:#6ee7b7;font-size:14px">✅ Lo que sí cumplimos</h3>
+          <ul class="clean" style="margin-top:6px">
+            <li>La View depende solo del Controller, nunca del Repository</li>
+            <li>La View nunca importa <code style="color:#6ee7b7">login.models</code> ni <code style="color:#6ee7b7">login.Respository</code></li>
+            <li>El flujo View → Controller → Repository → CSV respeta las capas</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color:#ef4444">
+          <h3 style="color:#fca5a5;font-size:14px">❌ Lo que nos falta</h3>
+          <ul class="clean" style="margin-top:6px">
+            <li>Los Controllers instancian directamente: <code style="color:#fca5a5">new UsuariosRepository()</code></li>
+            <li>Dependen de la clase concreta, no de una abstracción (interfaz)</li>
+            <li>Si se cambia CSV por SQL, habría que modificar el Controller</li>
+            <li>No hay inyección de dependencias — el Controller crea su propia dependencia</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color:#f59e0b;padding:12px 16px">
+          <p style="font-size:13px;color:#fde68a">💡 La solución sería inyectar el repositorio por constructor: <code>public UsuariosController(IUsuariosRepository repo)</code>. Así el Controller nunca sabe qué implementación usa.</p>
+        </div>
+      </div>
+      <div>
+        <pre><span class="cmt">// ❌ Lo que tenemos: acoplamiento fuerte</span>
+<span class="cmt">// El Controller crea su propia dependencia</span>
+<span class="kw">class</span> <span class="type">UsuariosController</span>
+{
+    <span class="kw">private</span> <span class="type">UsuariosRepository</span> repo
+        = <span class="kw">new</span> <span class="type">UsuariosRepository</span>(); <span class="cmt">// ← problema</span>
+}
+
+<span class="cmt">// ✅ Lo que debería ser:</span>
+<span class="cmt">// inyección de dependencias por constructor</span>
+<span class="kw">class</span> <span class="type">UsuariosController</span>
+{
+    <span class="kw">private readonly</span> <span class="type">IUsuariosRepository</span> repo;
+
+    <span class="cmt">// La dependencia llega desde afuera</span>
+    <span class="kw">public</span> <span class="fn">UsuariosController</span>(<span class="type">IUsuariosRepository</span> repo)
+    {
+        <span class="kw">this</span>.repo = repo;
+    }
+    <span class="cmt">// Ahora podría recibir CsvRepository,</span>
+    <span class="cmt">// SqlRepository o cualquier otro sin cambiar nada</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 14  Resumen SOLID en el proyecto
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s14">
+    <div class="tag tag-purple">Resumen</div>
+    <h2>SOLID aplicado en nuestro proyecto</h2>
+    <table style="margin-top:8px">
+      <thead>
+        <tr>
+          <th style="width:5%">•</th>
+          <th style="width:20%">Principio</th>
+          <th style="width:35%">Dónde se aplica</th>
+          <th>Evidencia en el código</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span style="font-size:20px;font-weight:900;color:#3b82f6">S</span></td>
+          <td style="color:#93c5fd;font-weight:600">Single Responsibility</td>
+          <td>Todas las capas</td>
+          <td>Cada clase tiene una sola función: Models = datos, Repository = CSV, Controller = lógica, Service = sesión</td>
+        </tr>
+        <tr>
+          <td><span style="font-size:20px;font-weight:900;color:#10b981">O</span></td>
+          <td style="color:#6ee7b7;font-weight:600">Open / Closed</td>
+          <td>Jerarquía de Models</td>
+          <td><code style="color:#fde68a">PersonaModel</code> nunca se modifica. Se extiende con <code style="color:#fde68a">UsuariosModel</code> y <code style="color:#fde68a">ClienteModel</code></td>
+        </tr>
+        <tr>
+          <td><span style="font-size:20px;font-weight:900;color:#f59e0b">L</span></td>
+          <td style="color:#fde68a;font-weight:600">Liskov Substitution</td>
+          <td>Herencia de modelos</td>
+          <td>Las subclases llaman a <code style="color:#fde68a">base(...)</code> respetando el constructor de <code style="color:#fde68a">PersonaModel</code></td>
+        </tr>
+        <tr>
+          <td><span style="font-size:20px;font-weight:900;color:#a855f7">I</span></td>
+          <td style="color:#ddd6fe;font-weight:600">Interface Segregation</td>
+          <td><span style="background:#4c1d9544;color:#f0abfc;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:700">⚠️ PARCIAL</span></td>
+          <td>
+            <span style="color:#6ee7b7">✅</span> Views reciben <code style="color:#fde68a">List&lt;string[]&gt;</code>, no modelos completos.<br>
+            <span style="color:#fca5a5">❌</span> No existen interfaces <code style="color:#fca5a5">IUsuariosRepository</code> ni <code style="color:#fca5a5">IClienteRepository</code>. Los Controllers conocen la implementación concreta.
+          </td>
+        </tr>
+        <tr>
+          <td><span style="font-size:20px;font-weight:900;color:#ef4444">D</span></td>
+          <td style="color:#fca5a5;font-weight:600">Dependency Inversion</td>
+          <td><span style="background:#7f1d1d44;color:#fca5a5;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:700">⚠️ PARCIAL</span></td>
+          <td>
+            <span style="color:#6ee7b7">✅</span> La View no depende del Repository ni de los Models.<br>
+            <span style="color:#fca5a5">❌</span> Los Controllers instancian <code style="color:#fca5a5">new UsuariosRepository()</code> directamente. Falta inyección de dependencias e interfaces.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 15  Conclusiones
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="s15">
+    <div class="tag tag-blue">Conclusiones</div>
+    <h2>¿Qué logramos con esta arquitectura?</h2>
+    <div class="cols-3" style="margin-top:8px">
+      <div class="card card-accent-blue">
+        <div style="font-size:32px;margin-bottom:8px">🔧</div>
+        <h3 style="color:#93c5fd;font-size:16px">Mantenibilidad</h3>
+        <p style="font-size:14px">Cada cambio impacta solo la capa correspondiente. Cambiar de CSV a base de datos solo modifica el Repository.</p>
+      </div>
+      <div class="card card-accent-green">
+        <div style="font-size:32px;margin-bottom:8px">📦</div>
+        <h3 style="color:#6ee7b7;font-size:16px">Escalabilidad</h3>
+        <p style="font-size:14px">Agregar una nueva entidad (Empleado, Proveedor...) sigue el mismo patrón sin tocar el código existente.</p>
+      </div>
+      <div class="card card-accent-amber">
+        <div style="font-size:32px;margin-bottom:8px">🧩</div>
+        <h3 style="color:#fde68a;font-size:16px">Separación clara</h3>
+        <p style="font-size:14px">Cada desarrollador puede trabajar en su capa sin interferir con los demás. La View no necesita saber de modelos.</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:24px;background:linear-gradient(135deg,#1d4ed815,#4c1d9515);border-color:#3b82f655;text-align:center;padding:28px">
+      <p style="font-size:17px;color:#f1f5f9">
+        La combinación de <strong style="color:#3b82f6">MVC extendida</strong> con los principios <strong style="color:#a855f7">SOLID</strong>
+        produce código que es <strong style="color:#10b981">fácil de entender</strong>,
+        <strong style="color:#f59e0b">fácil de cambiar</strong> y
+        <strong style="color:#ef4444">difícil de romper</strong>.
+      </p>
+    </div>
+  </div>
+
+</div><!-- /presentation -->
+
+<nav id="nav">
+  <button id="btn-prev" disabled>&#8592;</button>
+  <span id="counter">1 / 15</span>
+  <button id="btn-next">&#8594;</button>
+</nav>
+
+<script>
+  const total   = 15;
+  let current   = 1;
+
+  const progress = document.getElementById('progress');
+  const counter  = document.getElementById('counter');
+  const btnPrev  = document.getElementById('btn-prev');
+  const btnNext  = document.getElementById('btn-next');
+
+  function goTo(n) {
+    const prev = document.getElementById('s' + current);
+    prev.classList.remove('active');
+    prev.classList.add('exit');
+    setTimeout(() => prev.classList.remove('exit'), 400);
+
+    current = n;
+
+    const next = document.getElementById('s' + current);
+    next.classList.add('active');
+
+    counter.textContent = current + ' / ' + total;
+    progress.style.width = (current / total * 100) + '%';
+    btnPrev.disabled = current === 1;
+    btnNext.disabled = current === total;
+  }
+
+  btnPrev.addEventListener('click', () => { if (current > 1)     goTo(current - 1); });
+  btnNext.addEventListener('click', () => { if (current < total) goTo(current + 1); });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  { if (current < total) goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    { if (current > 1)     goTo(current - 1); }
+  });
+
+  // init progress
+  progress.style.width = (1 / total * 100) + '%';
+</script>
+</body>
+</html>

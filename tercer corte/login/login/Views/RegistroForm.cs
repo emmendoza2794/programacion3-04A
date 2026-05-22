@@ -1,14 +1,5 @@
-﻿using BCrypt.Net;
 using login.controllers;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace login
@@ -16,18 +7,34 @@ namespace login
     public partial class RegistroForm : Form
     {
         private UsuariosController usuariosController = new UsuariosController();
+
         public RegistroForm()
         {
             InitializeComponent();
         }
 
-        private void btnIniciar_Click(object sender, EventArgs e)
+        private void btnRegistrar_Click(object sender, EventArgs e)
         {
-            String usuario = txtUsuario.Text;
-            String contrasena = txtContrasena.Text;
+            string resultado = usuariosController.CrearUsuario(
+                txtNombre.Text, txtApellido.Text, txtCedula.Text,
+                txtEmail.Text, txtTelefono.Text,
+                txtUsuario.Text, txtContrasena.Text, "usuario");
 
-            string resultado = usuariosController.CrearUsuario(usuario, contrasena, "usuario");
             MessageBox.Show(resultado);
+
+            if (resultado == "Usuario creado exitosamente.")
+                LimpiarCampos();
+        }
+
+        private void LimpiarCampos()
+        {
+            txtNombre.Clear();
+            txtApellido.Clear();
+            txtCedula.Clear();
+            txtEmail.Clear();
+            txtTelefono.Clear();
+            txtUsuario.Clear();
+            txtContrasena.Clear();
         }
     }
 }

@@ -1,12 +1,5 @@
-﻿using login.Services;
+using login.Services;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace login.views
@@ -23,11 +16,17 @@ namespace login.views
             txtBienvenida.Text = $"Bienvenido, {SessionService.Usuario}";
             txtRol.Text = SessionService.Rol;
 
-            if(SessionService.Rol != "admin")
+            if (SessionService.Rol != "admin")
             {
                 button5.Visible = false;
                 button6.Visible = false;
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var formClientes = new ClientesForm();
+            formClientes.ShowDialog();
         }
 
         private void button6_Click(object sender, EventArgs e)
