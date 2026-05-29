@@ -290,6 +290,38 @@ namespace grafica_volumen
                         "  Mayor precisión en terrenos con\r\n" +
                         "  variaciones abruptas cerca de h.\r\n";
                     break;
+
+                case 3:
+                    txtEjemplo.Text =
+                        "REGLA DE SIMPSON 2D\r\n" +
+                        "════════════════════════════════════════\r\n\r\n" +
+                        "Aproxima la integral doble:\r\n" +
+                        "  V = ∬ max(z(x,y) − h, 0) dx dy\r\n\r\n" +
+                        "Cuadratura compuesta de orden 4 en cada\r\n" +
+                        "dirección. Los pesos 1D siguen el patrón:\r\n" +
+                        "  1, 4, 2, 4, 2, ..., 4, 1\r\n\r\n" +
+                        "  Fórmula:\r\n" +
+                        "  V ≈ (dx·dy/9) × Σᵢ Σⱼ wᵢ·wⱼ·max(f−h,0)\r\n\r\n" +
+                        "  Pesos por posición del nodo:\r\n" +
+                        "    Extremos (k=0 ó k=n-1) → w = 1\r\n" +
+                        "    Índice impar            → w = 4\r\n" +
+                        "    Índice par interior      → w = 2\r\n\r\n" +
+                        "────────────────────────────────────────\r\n" +
+                        "REQUISITO DE LA MALLA\r\n\r\n" +
+                        "  Necesita número IMPAR de nodos en cada\r\n" +
+                        "  dirección (número PAR de intervalos):\r\n" +
+                        "    3, 5, 7, 9, 11, ... nodos\r\n\r\n" +
+                        "  Si el grid tiene número par de nodos,\r\n" +
+                        "  se descarta la última fila/columna\r\n" +
+                        "  automáticamente.\r\n\r\n" +
+                        "────────────────────────────────────────\r\n" +
+                        "VENTAJA FRENTE AL TRAPECIO\r\n\r\n" +
+                        "  El error del Trapecio es O(h²);\r\n" +
+                        "  el de Simpson es O(h⁴): converge\r\n" +
+                        "  mucho más rápido al refinar la malla.\r\n\r\n" +
+                        "  Para terrenos suaves con pocos nodos\r\n" +
+                        "  Simpson supera claramente al Trapecio.\r\n";
+                    break;
             }
         }
 
@@ -333,8 +365,18 @@ namespace grafica_volumen
             }
 
             var metodo = (MetodoCalculo)cmbMetodo.SelectedIndex;
-            double volumen = CalculoVolumen.Calcular(
-                alturas, (double)nudH.Value, (double)nudDx.Value, (double)nudDy.Value, metodo);
+            double volumen;
+            try
+            {
+                volumen = CalculoVolumen.Calcular(
+                    alturas, (double)nudH.Value, (double)nudDx.Value, (double)nudDy.Value, metodo);
+            }
+            catch (ArgumentException ex)
+            {
+                lblResultado.Text = "Error: " + ex.Message;
+                lblResultado.ForeColor = System.Drawing.Color.Crimson;
+                return;
+            }
             lblResultado.Text = $"V = {volumen:F2} m³   [{cmbMetodo.SelectedItem}]";
             lblResultado.ForeColor = System.Drawing.Color.DarkGreen;
         }

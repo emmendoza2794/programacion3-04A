@@ -117,37 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="txtEjemplo.Text" xml:space="preserve">
-    <value>EJEMPLO: terreno de 4×4 puntos
-Celdas de 5 m × 5 m  |  Cota de corte h = 10 m
-─────────────────────────────────────────
-
-Cuadrícula f(x,y) — alturas medidas [m]:
-
-        X1     X2     X3     X4
-  Y1   12.5   13.0   14.2   13.8
-  Y2   11.8   12.3   13.5   12.9
-  Y3   10.5   11.0   12.1   11.7
-  Y4   10.1   10.4   11.3   10.8
-
-─────────────────────────────────────────
-Parámetros:
-  h  = 10.00 m   (nivel final de excavación)
-  Δx =  5.00 m   (distancia entre puntos en X)
-  Δy =  5.00 m   (distancia entre puntos en Y)
-
-─────────────────────────────────────────
-Cálculo por celda  (fij − h) × Δx × Δy:
-
-  Y1/X1: (12.5−10)×5×5 =  62.50 m³
-  Y1/X2: (13.0−10)×5×5 =  75.00 m³
-  Y1/X3: (14.2−10)×5×5 = 105.00 m³
-  Y1/X4: (13.8−10)×5×5 =  95.00 m³
-  ... (suma todas las celdas donde fij &gt; h)
-
-─────────────────────────────────────────
-NOTA: si fij − h ≤ 0, la celda ya está
-por debajo del nivel de corte → no excava
-(se omite en la suma).</value>
-  </data>
 </root>

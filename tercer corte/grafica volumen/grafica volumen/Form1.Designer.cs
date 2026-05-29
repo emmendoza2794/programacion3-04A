@@ -23,9 +23,9 @@ namespace grafica_volumen
             this.dgvTerreno = new System.Windows.Forms.DataGridView();
             this.btnCrearGrid = new System.Windows.Forms.Button();
             this.btnEjemplo = new System.Windows.Forms.Button();
-            this.btnMontana   = new System.Windows.Forms.Button();
-            this.btnCresta    = new System.Windows.Forms.Button();
-            this.btnDosPicos  = new System.Windows.Forms.Button();
+            this.btnMontana = new System.Windows.Forms.Button();
+            this.btnCresta = new System.Windows.Forms.Button();
+            this.btnDosPicos = new System.Windows.Forms.Button();
             this.btnCalcular = new System.Windows.Forms.Button();
             this.btnGrafica = new System.Windows.Forms.Button();
             this.lblResultado = new System.Windows.Forms.Label();
@@ -114,7 +114,7 @@ namespace grafica_volumen
             // 
             this.nudDx.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.nudDx.DecimalPlaces = 2;
-            this.nudDx.Location = new System.Drawing.Point(356, 611);
+            this.nudDx.Location = new System.Drawing.Point(400, 613);
             this.nudDx.Maximum = new decimal(new int[] {
             99999,
             0,
@@ -138,7 +138,7 @@ namespace grafica_volumen
             // 
             this.nudDy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.nudDy.DecimalPlaces = 2;
-            this.nudDy.Location = new System.Drawing.Point(546, 611);
+            this.nudDy.Location = new System.Drawing.Point(590, 613);
             this.nudDy.Maximum = new decimal(new int[] {
             99999,
             0,
@@ -189,58 +189,58 @@ namespace grafica_volumen
             this.btnEjemplo.ForeColor = System.Drawing.Color.White;
             this.btnEjemplo.Location = new System.Drawing.Point(425, 11);
             this.btnEjemplo.Name = "btnEjemplo";
-            this.btnEjemplo.Size = new System.Drawing.Size(130, 28);
+            this.btnEjemplo.Size = new System.Drawing.Size(130, 32);
             this.btnEjemplo.TabIndex = 5;
             this.btnEjemplo.Text = "Datos aleatorios";
             this.btnEjemplo.UseVisualStyleBackColor = false;
             this.btnEjemplo.Click += new System.EventHandler(this.BtnEjemplo_Click);
-            //
+            // 
             // btnMontana
-            //
+            // 
             this.btnMontana.BackColor = System.Drawing.Color.SaddleBrown;
             this.btnMontana.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMontana.ForeColor = System.Drawing.Color.White;
             this.btnMontana.Location = new System.Drawing.Point(567, 11);
             this.btnMontana.Name = "btnMontana";
-            this.btnMontana.Size = new System.Drawing.Size(130, 28);
+            this.btnMontana.Size = new System.Drawing.Size(130, 32);
             this.btnMontana.TabIndex = 22;
             this.btnMontana.Text = "Montaña";
             this.btnMontana.UseVisualStyleBackColor = false;
             this.btnMontana.Click += new System.EventHandler(this.BtnMontana_Click);
-            //
+            // 
             // btnCresta
-            //
+            // 
             this.btnCresta.BackColor = System.Drawing.Color.DarkOliveGreen;
             this.btnCresta.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCresta.ForeColor = System.Drawing.Color.White;
-            this.btnCresta.Location  = new System.Drawing.Point(709, 11);
-            this.btnCresta.Name      = "btnCresta";
-            this.btnCresta.Size      = new System.Drawing.Size(130, 28);
-            this.btnCresta.TabIndex  = 23;
-            this.btnCresta.Text      = "Cresta";
+            this.btnCresta.Location = new System.Drawing.Point(709, 11);
+            this.btnCresta.Name = "btnCresta";
+            this.btnCresta.Size = new System.Drawing.Size(130, 32);
+            this.btnCresta.TabIndex = 23;
+            this.btnCresta.Text = "Cresta";
             this.btnCresta.UseVisualStyleBackColor = false;
-            this.btnCresta.Click    += new System.EventHandler(this.BtnCresta_Click);
-            //
+            this.btnCresta.Click += new System.EventHandler(this.BtnCresta_Click);
+            // 
             // btnDosPicos
-            //
+            // 
             this.btnDosPicos.BackColor = System.Drawing.Color.Sienna;
             this.btnDosPicos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDosPicos.ForeColor = System.Drawing.Color.White;
-            this.btnDosPicos.Location  = new System.Drawing.Point(851, 11);
-            this.btnDosPicos.Name      = "btnDosPicos";
-            this.btnDosPicos.Size      = new System.Drawing.Size(130, 28);
-            this.btnDosPicos.TabIndex  = 24;
-            this.btnDosPicos.Text      = "Dos picos";
+            this.btnDosPicos.Location = new System.Drawing.Point(851, 11);
+            this.btnDosPicos.Name = "btnDosPicos";
+            this.btnDosPicos.Size = new System.Drawing.Size(130, 32);
+            this.btnDosPicos.TabIndex = 24;
+            this.btnDosPicos.Text = "Dos picos";
             this.btnDosPicos.UseVisualStyleBackColor = false;
-            this.btnDosPicos.Click    += new System.EventHandler(this.BtnDosPicos_Click);
-            //
+            this.btnDosPicos.Click += new System.EventHandler(this.BtnDosPicos_Click);
+            // 
             // btnCalcular
             // 
-            this.btnCalcular.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCalcular.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCalcular.BackColor = System.Drawing.Color.SteelBlue;
             this.btnCalcular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCalcular.ForeColor = System.Drawing.Color.White;
-            this.btnCalcular.Location = new System.Drawing.Point(729, 609);
+            this.btnCalcular.Location = new System.Drawing.Point(389, 563);
             this.btnCalcular.Name = "btnCalcular";
             this.btnCalcular.Size = new System.Drawing.Size(140, 30);
             this.btnCalcular.TabIndex = 16;
@@ -250,11 +250,11 @@ namespace grafica_volumen
             // 
             // btnGrafica
             // 
-            this.btnGrafica.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGrafica.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnGrafica.BackColor = System.Drawing.Color.ForestGreen;
             this.btnGrafica.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGrafica.ForeColor = System.Drawing.Color.White;
-            this.btnGrafica.Location = new System.Drawing.Point(883, 609);
+            this.btnGrafica.Location = new System.Drawing.Point(542, 563);
             this.btnGrafica.Name = "btnGrafica";
             this.btnGrafica.Size = new System.Drawing.Size(140, 30);
             this.btnGrafica.TabIndex = 17;
@@ -306,9 +306,9 @@ namespace grafica_volumen
             this.lblEjemploTitulo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblEjemploTitulo.AutoSize = true;
             this.lblEjemploTitulo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblEjemploTitulo.Location = new System.Drawing.Point(817, 41);
+            this.lblEjemploTitulo.Location = new System.Drawing.Point(1055, 42);
             this.lblEjemploTitulo.Name = "lblEjemploTitulo";
-            this.lblEjemploTitulo.Size = new System.Drawing.Size(151, 23);
+            this.lblEjemploTitulo.Size = new System.Drawing.Size(201, 23);
             this.lblEjemploTitulo.TabIndex = 8;
             this.lblEjemploTitulo.Text = "Descripción del método";
             // 
@@ -326,7 +326,7 @@ namespace grafica_volumen
             // 
             this.lblDx.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblDx.AutoSize = true;
-            this.lblDx.Location = new System.Drawing.Point(276, 614);
+            this.lblDx.Location = new System.Drawing.Point(320, 616);
             this.lblDx.Name = "lblDx";
             this.lblDx.Size = new System.Drawing.Size(63, 23);
             this.lblDx.TabIndex = 12;
@@ -336,7 +336,7 @@ namespace grafica_volumen
             // 
             this.lblDy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblDy.AutoSize = true;
-            this.lblDy.Location = new System.Drawing.Point(466, 614);
+            this.lblDy.Location = new System.Drawing.Point(510, 616);
             this.lblDy.Name = "lblDy";
             this.lblDy.Size = new System.Drawing.Size(63, 23);
             this.lblDy.TabIndex = 14;
@@ -352,7 +352,7 @@ namespace grafica_volumen
             this.txtEjemplo.Location = new System.Drawing.Point(737, 68);
             this.txtEjemplo.Name = "txtEjemplo";
             this.txtEjemplo.ReadOnly = true;
-            this.txtEjemplo.Size = new System.Drawing.Size(519, 481);
+            this.txtEjemplo.Size = new System.Drawing.Size(519, 635);
             this.txtEjemplo.TabIndex = 9;
             this.txtEjemplo.Text = "";
             // 
@@ -373,13 +373,13 @@ namespace grafica_volumen
             this.cmbMetodo.Items.AddRange(new object[] {
             "Método de Cuadrícula",
             "Método de Prismas",
-            "Regla del Trapecio 2D"});
-            this.cmbMetodo.SelectedIndex = 0;
-            this.cmbMetodo.SelectedIndexChanged += new System.EventHandler(this.cmbMetodo_SelectedIndexChanged);
+            "Regla del Trapecio 2D",
+            "Regla de Simpson 2D"});
             this.cmbMetodo.Location = new System.Drawing.Point(91, 561);
             this.cmbMetodo.Name = "cmbMetodo";
             this.cmbMetodo.Size = new System.Drawing.Size(280, 31);
             this.cmbMetodo.TabIndex = 21;
+            this.cmbMetodo.SelectedIndexChanged += new System.EventHandler(this.cmbMetodo_SelectedIndexChanged);
             // 
             // Form1
             // 
