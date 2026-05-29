@@ -41,5 +41,11 @@ namespace login.views
             var formProductos = new ProductosForm();
             formProductos.ShowDialog();
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            var formMateriales = new MaterialesForm();
+            formMateriales.ShowDialog();
+        }
     }
 }

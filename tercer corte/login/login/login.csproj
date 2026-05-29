@@ -66,12 +66,15 @@
     <Compile Include="Models\UsuariosModel.cs" />
     <Compile Include="Models\ClienteModel.cs" />
     <Compile Include="Models\ProductoModel.cs" />
+    <Compile Include="Models\MaterialModel.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\ProductoController.cs" />
+    <Compile Include="Controllers\MaterialController.cs" />
     <Compile Include="Respository\UsuariosRepository.cs" />
     <Compile Include="Respository\ClienteRepository.cs" />
     <Compile Include="Respository\ProductoRepository.cs" />
+    <Compile Include="Respository\MaterialRepository.cs" />
     <Compile Include="Services\SessionService.cs" />
     <Compile Include="Views\LoginForm.cs">
       <SubType>Form</SubType>
@@ -111,6 +114,12 @@
     <Compile Include="Views\ProductosForm.Designer.cs">
       <DependentUpon>ProductosForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\MaterialesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MaterialesForm.Designer.cs">
+      <DependentUpon>MaterialesForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Views\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -137,6 +146,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProductosForm.resx">
       <DependentUpon>ProductosForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MaterialesForm.resx">
+      <DependentUpon>MaterialesForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

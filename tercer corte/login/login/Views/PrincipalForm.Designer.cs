@@ -37,6 +37,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             this.txtRol = new System.Windows.Forms.Label();
             this.txtBienvenida = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -73,6 +74,7 @@
             this.flowLayoutPanel1.Controls.Add(this.button5);
             this.flowLayoutPanel1.Controls.Add(this.button6);
             this.flowLayoutPanel1.Controls.Add(this.button7);
+            this.flowLayoutPanel1.Controls.Add(this.button8);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(183, 500);
@@ -144,6 +146,16 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             //
+            // button8
+            //
+            this.button8.Location = new System.Drawing.Point(3, 486);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(180, 63);
+            this.button8.TabIndex = 7;
+            this.button8.Text = "Materiales";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            //
             // txtRol
             // 
             this.txtRol.AutoSize = true;
@@ -194,6 +206,7 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Label txtRol;
         private System.Windows.Forms.Label txtBienvenida;
     }
