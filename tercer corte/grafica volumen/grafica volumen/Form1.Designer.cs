@@ -28,6 +28,8 @@ namespace grafica_volumen
             this.btnDosPicos = new System.Windows.Forms.Button();
             this.btnCalcular = new System.Windows.Forms.Button();
             this.btnGrafica = new System.Windows.Forms.Button();
+            this.btnGrafica2 = new System.Windows.Forms.Button();
+            this.btnPlano = new System.Windows.Forms.Button();
             this.lblResultado = new System.Windows.Forms.Label();
             this.lblFilas = new System.Windows.Forms.Label();
             this.lblColumnas = new System.Windows.Forms.Label();
@@ -170,7 +172,7 @@ namespace grafica_volumen
             this.dgvTerreno.Location = new System.Drawing.Point(12, 68);
             this.dgvTerreno.Name = "dgvTerreno";
             this.dgvTerreno.RowHeadersWidth = 55;
-            this.dgvTerreno.Size = new System.Drawing.Size(719, 481);
+            this.dgvTerreno.Size = new System.Drawing.Size(873, 481);
             this.dgvTerreno.TabIndex = 7;
             // 
             // btnCrearGrid
@@ -233,6 +235,19 @@ namespace grafica_volumen
             this.btnDosPicos.Text = "Dos picos";
             this.btnDosPicos.UseVisualStyleBackColor = false;
             this.btnDosPicos.Click += new System.EventHandler(this.BtnDosPicos_Click);
+            //
+            // btnPlano
+            //
+            this.btnPlano.BackColor = System.Drawing.Color.CadetBlue;
+            this.btnPlano.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPlano.ForeColor = System.Drawing.Color.White;
+            this.btnPlano.Location = new System.Drawing.Point(993, 11);
+            this.btnPlano.Name = "btnPlano";
+            this.btnPlano.Size = new System.Drawing.Size(130, 32);
+            this.btnPlano.TabIndex = 26;
+            this.btnPlano.Text = "Terreno plano";
+            this.btnPlano.UseVisualStyleBackColor = false;
+            this.btnPlano.Click += new System.EventHandler(this.BtnPlano_Click);
             // 
             // btnCalcular
             // 
@@ -261,6 +276,20 @@ namespace grafica_volumen
             this.btnGrafica.Text = "Ver Gráfica 3D";
             this.btnGrafica.UseVisualStyleBackColor = false;
             this.btnGrafica.Click += new System.EventHandler(this.BtnGrafica_Click);
+            // 
+            // btnGrafica2
+            // 
+            this.btnGrafica2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnGrafica2.BackColor = System.Drawing.Color.DarkOrange;
+            this.btnGrafica2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGrafica2.ForeColor = System.Drawing.Color.White;
+            this.btnGrafica2.Location = new System.Drawing.Point(695, 563);
+            this.btnGrafica2.Name = "btnGrafica2";
+            this.btnGrafica2.Size = new System.Drawing.Size(160, 30);
+            this.btnGrafica2.TabIndex = 25;
+            this.btnGrafica2.Text = "Ver Excavación 3D";
+            this.btnGrafica2.UseVisualStyleBackColor = false;
+            this.btnGrafica2.Click += new System.EventHandler(this.BtnGrafica2_Click);
             // 
             // lblResultado
             // 
@@ -306,7 +335,7 @@ namespace grafica_volumen
             this.lblEjemploTitulo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblEjemploTitulo.AutoSize = true;
             this.lblEjemploTitulo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblEjemploTitulo.Location = new System.Drawing.Point(1055, 42);
+            this.lblEjemploTitulo.Location = new System.Drawing.Point(1209, 42);
             this.lblEjemploTitulo.Name = "lblEjemploTitulo";
             this.lblEjemploTitulo.Size = new System.Drawing.Size(201, 23);
             this.lblEjemploTitulo.TabIndex = 8;
@@ -349,7 +378,7 @@ namespace grafica_volumen
             this.txtEjemplo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.txtEjemplo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtEjemplo.Font = new System.Drawing.Font("Consolas", 10F);
-            this.txtEjemplo.Location = new System.Drawing.Point(737, 68);
+            this.txtEjemplo.Location = new System.Drawing.Point(891, 68);
             this.txtEjemplo.Name = "txtEjemplo";
             this.txtEjemplo.ReadOnly = true;
             this.txtEjemplo.Size = new System.Drawing.Size(519, 635);
@@ -384,7 +413,7 @@ namespace grafica_volumen
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(1292, 728);
+            this.ClientSize = new System.Drawing.Size(1446, 728);
             this.Controls.Add(this.lblFilas);
             this.Controls.Add(this.nudFilas);
             this.Controls.Add(this.lblColumnas);
@@ -394,6 +423,7 @@ namespace grafica_volumen
             this.Controls.Add(this.btnMontana);
             this.Controls.Add(this.btnCresta);
             this.Controls.Add(this.btnDosPicos);
+            this.Controls.Add(this.btnPlano);
             this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.dgvTerreno);
             this.Controls.Add(this.lblEjemploTitulo);
@@ -406,6 +436,7 @@ namespace grafica_volumen
             this.Controls.Add(this.nudDy);
             this.Controls.Add(this.btnCalcular);
             this.Controls.Add(this.btnGrafica);
+            this.Controls.Add(this.btnGrafica2);
             this.Controls.Add(this.lblResultado);
             this.Controls.Add(this.lblMetodo);
             this.Controls.Add(this.cmbMetodo);
@@ -438,8 +469,10 @@ namespace grafica_volumen
         private System.Windows.Forms.Button btnMontana;
         private System.Windows.Forms.Button btnCresta;
         private System.Windows.Forms.Button btnDosPicos;
+        private System.Windows.Forms.Button btnPlano;
         private System.Windows.Forms.Button btnCalcular;
         private System.Windows.Forms.Button btnGrafica;
+        private System.Windows.Forms.Button btnGrafica2;
         private System.Windows.Forms.Label lblResultado;
         private System.Windows.Forms.Label lblFilas;
         private System.Windows.Forms.Label lblColumnas;

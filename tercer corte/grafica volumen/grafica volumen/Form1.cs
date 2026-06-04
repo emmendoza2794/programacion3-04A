@@ -143,6 +143,43 @@ namespace grafica_volumen
             lblResultado.ForeColor = System.Drawing.SystemColors.ControlText;
         }
 
+        private void BtnPlano_Click(object sender, EventArgs e)
+        {
+            nudH.Value  = 10;
+            nudDx.Value = 5;
+            nudDy.Value = 5;
+
+            int filas = dgvTerreno.Rows.Count;
+            int cols  = dgvTerreno.Columns.Count;
+
+            // Terreno casi plano: ondulaciones suaves centradas alrededor de 9.5 m
+            // (algunas celdas sobre h=10, otras bajo h=10 → volumen de excavación visible)
+            const double media = 9.5;
+            const double amp1  = 1.8;   // ondulación principal N-S
+            const double amp2  = 1.3;   // ondulación cruzada E-O
+            const double amp3  = 0.5;   // microvariación aleatoria suave
+            var rnd = new Random(17);
+
+            for (int i = 0; i < filas; i++)
+                for (int j = 0; j < cols; j++)
+                {
+                    double u = cols  > 1 ? (double)j / (cols  - 1) : 0.5;
+                    double v = filas > 1 ? (double)i / (filas - 1) : 0.5;
+
+                    double valor = media
+                        + amp1 * Math.Sin(u * Math.PI * 1.4) * Math.Cos(v * Math.PI * 0.9)
+                        + amp2 * Math.Cos(u * Math.PI * 0.7 + 0.3) * Math.Sin(v * Math.PI * 1.5)
+                        + amp3 * (rnd.NextDouble() * 2.0 - 1.0);
+
+                    dgvTerreno.Rows[i].Cells[j].Value = valor.ToString("F2",
+                        System.Globalization.CultureInfo.InvariantCulture);
+                    dgvTerreno.Rows[i].Cells[j].Style.BackColor = System.Drawing.Color.White;
+                }
+
+            lblResultado.Text = "Volumen: —";
+            lblResultado.ForeColor = System.Drawing.SystemColors.ControlText;
+        }
+
         private void BtnDosPicos_Click(object sender, EventArgs e)
         {
             nudH.Value  = 10;
@@ -176,6 +213,33 @@ namespace grafica_volumen
 
             lblResultado.Text = "Volumen: —";
             lblResultado.ForeColor = System.Drawing.SystemColors.ControlText;
+        }
+
+        private void BtnGrafica2_Click(object sender, EventArgs e)
+        {
+            dgvTerreno.CurrentCell = null;
+            int filas = dgvTerreno.Rows.Count;
+            int cols  = dgvTerreno.Columns.Count;
+            var alturas = new double[filas, cols];
+
+            for (int i = 0; i < filas; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    string celda = dgvTerreno.Rows[i].Cells[j].Value?.ToString() ?? "";
+                    if (!double.TryParse(celda, System.Globalization.NumberStyles.Any,
+                            System.Globalization.CultureInfo.InvariantCulture, out double fij))
+                    {
+                        MessageBox.Show("Hay celdas con valores inválidos. Corrígelas antes de graficar.",
+                            "Datos inválidos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    alturas[i, j] = fij;
+                }
+            }
+
+            var form3 = new Form3(alturas, (double)nudH.Value, (double)nudDx.Value, (double)nudDy.Value);
+            form3.Show();
         }
 
         private void BtnGrafica_Click(object sender, EventArgs e)
